@@ -1,0 +1,144 @@
+# Коди GAEZ: docs/design/crop-recommendation-design.md §5.3. Класифікація потребує перевірки.
+- id: wheat_winter
+  name_uk: "Пшениця озима"
+  status: demo
+  family: cereals
+  season_type: winter
+  supported_regions: [UA-53]
+  gaez_code: WHE
+  gaez_match: parent_crop
+  establishment_moisture_sensitive: true
+  commodity_spec: wheat_grain_class3
+  source: {type: synthetic_test_fixture, ref: "design §5 і §8 demo; додаткові параметри — синтетичні дані тесту", url: null, verified_by: null, verified_at: null}
+
+- id: wheat_spring
+  name_uk: "Пшениця яра"
+  status: demo
+  family: cereals
+  season_type: spring
+  supported_regions: [UA-53]
+  gaez_code: WHE
+  gaez_match: parent_crop
+  establishment_moisture_sensitive: false
+  commodity_spec: wheat_spring
+  source: {type: synthetic_test_fixture, ref: "design §5 і §8 demo; додаткові параметри — синтетичні дані тесту", url: null, verified_by: null, verified_at: null}
+
+- id: barley_winter
+  name_uk: "Ячмінь озимий"
+  status: demo
+  family: cereals
+  season_type: winter
+  supported_regions: [UA-53]
+  gaez_code: BRL
+  gaez_match: parent_crop
+  establishment_moisture_sensitive: true
+  commodity_spec: barley_winter
+  source: {type: synthetic_test_fixture, ref: "design §5 і §8 demo; додаткові параметри — синтетичні дані тесту", url: null, verified_by: null, verified_at: null}
+
+- id: barley_spring
+  name_uk: "Ячмінь ярий"
+  status: demo
+  family: cereals
+  season_type: spring
+  supported_regions: [UA-53]
+  gaez_code: BRL
+  gaez_match: parent_crop
+  establishment_moisture_sensitive: false
+  commodity_spec: barley_feed
+  source: {type: synthetic_test_fixture, ref: "design §5 і §8 demo; додаткові параметри — синтетичні дані тесту", url: null, verified_by: null, verified_at: null}
+
+- id: rapeseed_winter
+  name_uk: "Ріпак озимий"
+  status: demo
+  family: brassicaceae
+  season_type: winter
+  supported_regions: [UA-53]
+  gaez_code: RSD
+  gaez_match: parent_crop
+  establishment_moisture_sensitive: true
+  commodity_spec: rapeseed_winter
+  source: {type: synthetic_test_fixture, ref: "design §5 і §8 demo; додаткові параметри — синтетичні дані тесту", url: null, verified_by: null, verified_at: null}
+
+- id: rye_winter
+  name_uk: "Жито озиме"
+  status: demo
+  family: cereals
+  season_type: winter
+  supported_regions: [UA-53]
+  gaez_code: RYE
+  gaez_match: parent_crop
+  establishment_moisture_sensitive: true
+  commodity_spec: rye_winter
+  source: {type: synthetic_test_fixture, ref: "design §5 і §8 demo; додаткові параметри — синтетичні дані тесту", url: null, verified_by: null, verified_at: null}
+
+- id: maize_grain
+  name_uk: "Кукурудза на зерно"
+  status: demo
+  family: cereals
+  season_type: summer
+  supported_regions: [UA-53]
+  gaez_code: MZE
+  gaez_match: exact
+  establishment_moisture_sensitive: false
+  commodity_spec: maize_grain
+  source: {type: synthetic_test_fixture, ref: "design §5 і §8 demo; додаткові параметри — синтетичні дані тесту", url: null, verified_by: null, verified_at: null}
+
+- id: sunflower
+  name_uk: "Соняшник"
+  status: demo
+  family: asteraceae
+  season_type: summer
+  supported_regions: [UA-53]
+  gaez_code: SFL
+  gaez_match: exact
+  establishment_moisture_sensitive: false
+  commodity_spec: sunflower
+  source: {type: synthetic_test_fixture, ref: "design §5 і §8 demo; додаткові параметри — синтетичні дані тесту", url: null, verified_by: null, verified_at: null}
+
+- id: soybean
+  name_uk: "Соя"
+  status: demo
+  family: legumes
+  season_type: summer
+  supported_regions: [UA-53]
+  gaez_code: SOY
+  gaez_match: exact
+  establishment_moisture_sensitive: false
+  commodity_spec: soybean
+  source: {type: synthetic_test_fixture, ref: "design §5 і §8 demo; додаткові параметри — синтетичні дані тесту", url: null, verified_by: null, verified_at: null}
+
+- id: pea_dry
+  name_uk: "Горох сухий"
+  status: demo
+  family: legumes
+  season_type: spring
+  supported_regions: [UA-53]
+  gaez_code: PEA
+  gaez_match: exact
+  establishment_moisture_sensitive: false
+  commodity_spec: pea_dry
+  source: {type: synthetic_test_fixture, ref: "design §5 і §8 demo; додаткові параметри — синтетичні дані тесту", url: null, verified_by: null, verified_at: null}
+
+- id: sugar_beet
+  name_uk: "Буряк цукровий"
+  status: demo
+  family: amaranthaceae
+  season_type: spring
+  supported_regions: [UA-53]
+  gaez_code: SUB
+  gaez_match: exact
+  establishment_moisture_sensitive: false
+  commodity_spec: sugar_beet
+  source: {type: synthetic_test_fixture, ref: "design §5 і §8 demo; додаткові параметри — синтетичні дані тесту", url: null, verified_by: null, verified_at: null}
+
+- id: oat
+  name_uk: "Овес"
+  status: demo
+  family: cereals
+  season_type: spring
+  supported_regions: [UA-53]
+  gaez_code: OAT
+  gaez_match: exact
+  establishment_moisture_sensitive: false
+  commodity_spec: oat
+  source: {type: synthetic_test_fixture, ref: "design §5 і §8 demo; додаткові параметри — синтетичні дані тесту", url: null, verified_by: null, verified_at: null}

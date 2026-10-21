@@ -1,0 +1,157 @@
+# DEMO ONLY. Числа дизайну §5/§8; ціни 30/90 днів — синтетичні параметри тесту.
+- id: rotation.favorable
+  category: rotation
+  status: demo
+  value: 1.05
+  lo: null
+  mid: null
+  hi: null
+  source: {type: synthetic_test_fixture, ref: "design §5 і §8 demo; додаткові параметри — синтетичні дані тесту", url: null, verified_by: null, verified_at: null}
+
+- id: rotation.neutral
+  category: rotation
+  status: demo
+  value: 1.0
+  lo: null
+  mid: null
+  hi: null
+  source: {type: synthetic_test_fixture, ref: "design §5 і §8 demo; додаткові параметри — синтетичні дані тесту", url: null, verified_by: null, verified_at: null}
+
+- id: rotation.discouraged_mild
+  category: rotation
+  status: demo
+  value: 0.9
+  lo: null
+  mid: null
+  hi: null
+  source: {type: synthetic_test_fixture, ref: "design §5 і §8 demo; додаткові параметри — синтетичні дані тесту", url: null, verified_by: null, verified_at: null}
+
+- id: rotation.discouraged_strong
+  category: rotation
+  status: demo
+  value: 0.7
+  lo: null
+  mid: null
+  hi: null
+  source: {type: synthetic_test_fixture, ref: "design §5 і §8 demo; додаткові параметри — синтетичні дані тесту", url: null, verified_by: null, verified_at: null}
+
+- id: rotation.missing
+  category: rotation
+  status: demo
+  value: null
+  lo: 0.7
+  mid: 1.0
+  hi: 1.05
+  source: {type: synthetic_test_fixture, ref: "design §5 і §8 demo; додаткові параметри — синтетичні дані тесту", url: null, verified_by: null, verified_at: null}
+
+- id: weather.dry
+  category: weather
+  status: demo
+  value: null
+  lo: 0.85
+  mid: 0.9
+  hi: 0.95
+  source: {type: synthetic_test_fixture, ref: "design §5 і §8 demo; додаткові параметри — синтетичні дані тесту", url: null, verified_by: null, verified_at: null}
+
+- id: weather.normal
+  category: weather
+  status: demo
+  value: null
+  lo: 0.97
+  mid: 1.0
+  hi: 1.03
+  source: {type: synthetic_test_fixture, ref: "design §5 і §8 demo; додаткові параметри — синтетичні дані тесту", url: null, verified_by: null, verified_at: null}
+
+- id: weather.wet_ok
+  category: weather
+  status: demo
+  value: null
+  lo: 1.0
+  mid: 1.02
+  hi: 1.05
+  source: {type: synthetic_test_fixture, ref: "design §5 і §8 demo; додаткові параметри — синтетичні дані тесту", url: null, verified_by: null, verified_at: null}
+
+- id: weather.missing
+  category: weather
+  status: demo
+  value: null
+  lo: 0.85
+  mid: 1.0
+  hi: 1.05
+  source: {type: synthetic_test_fixture, ref: "design §5 і §8 demo; додаткові параметри — синтетичні дані тесту", url: null, verified_by: null, verified_at: null}
+
+- id: threshold.floor_agro
+  category: threshold
+  status: demo
+  value: 0.4
+  lo: null
+  mid: null
+  hi: null
+  source: {type: synthetic_test_fixture, ref: "design §5 і §8 demo; додаткові параметри — синтетичні дані тесту", url: null, verified_by: null, verified_at: null}
+
+- id: ranking.nowcast_horizon_days
+  category: ranking
+  status: demo
+  value: 30
+  lo: null
+  mid: null
+  hi: null
+  source: {type: synthetic_test_fixture, ref: "design §5 і §8 demo; додаткові параметри — синтетичні дані тесту", url: null, verified_by: null, verified_at: null}
+
+- id: ranking.near_tie_epsilon
+  category: ranking
+  status: demo
+  value: 0.02
+  lo: null
+  mid: null
+  hi: null
+  source: {type: synthetic_test_fixture, ref: "design §5 і §8 demo; додаткові параметри — синтетичні дані тесту", url: null, verified_by: null, verified_at: null}
+
+- id: ranking.price_stale_days
+  category: ranking
+  status: demo
+  value: 30
+  lo: null
+  mid: null
+  hi: null
+  source: {type: synthetic_test_fixture, ref: "design §5 і §8 demo; додаткові параметри — синтетичні дані тесту", url: null, verified_by: null, verified_at: null}
+
+- id: ranking.price_max_age_days
+  category: ranking
+  status: demo
+  value: 90
+  lo: null
+  mid: null
+  hi: null
+  source: {type: synthetic_test_fixture, ref: "design §5 і §8 demo; додаткові параметри — синтетичні дані тесту", url: null, verified_by: null, verified_at: null}
+
+- id: ranking.price_scenario_fraction
+  category: ranking
+  status: demo
+  value: 0.15
+  lo: null
+  mid: null
+  hi: null
+  source: {type: synthetic_test_fixture, ref: "design §5 і §8 demo; додаткові параметри — синтетичні дані тесту", url: null, verified_by: null, verified_at: null}
+
+- id: ranking.robustness_cost_fraction
+  category: ranking
+  status: demo
+  value: 0.15
+  lo: null
+  mid: null
+  hi: null
+  source: {type: synthetic_test_fixture, ref: "design §5 і §8 demo; додаткові параметри — синтетичні дані тесту", url: null, verified_by: null, verified_at: null}
+
+
+- id: ranking.weather_dry_percentile
+  category: ranking
+  status: demo
+  value: 20
+  source: {type: synthetic_test_fixture, ref: "design §5.5.3 demo"}
+
+- id: ranking.weather_wet_percentile
+  category: ranking
+  status: demo
+  value: 60
+  source: {type: synthetic_test_fixture, ref: "design §5.5.3 demo"}

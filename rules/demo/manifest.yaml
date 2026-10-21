@@ -1,0 +1,4 @@
+version: rules-synthetic-demo-0.1.0
+status: demo
+regions: [UA-53]
+description: "Лише синтетична демонстрація. Не використовувати для реальних агрономічних рішень."

@@ -1,0 +1,1293 @@
+{
+  "recommendation_id": "rec_f43785ec0aaacaeb1cf280d5dcefc659",
+  "status": "ok",
+  "mode": "LIMITED",
+  "as_of_date": "2026-10-21",
+  "computed_at": "2026-10-20T23:37:20.054573Z",
+  "results": [
+    {
+      "rank": 1,
+      "crop_variant": "oat",
+      "name_uk": "Овес",
+      "tier": 1,
+      "status": "conditional",
+      "agro_score": {
+        "lo": 1.0,
+        "mid": 1.0,
+        "hi": 1.0
+      },
+      "gaez": {
+        "layer": "GAEZ-V5.RES05-SUX.HP0120.AGERA5.HIST.OAT.HRLM",
+        "crop_code": "OAT",
+        "match": "exact",
+        "scenario": {
+          "period": "HP0120",
+          "clim": "AGERA5",
+          "ssp": "HIST",
+          "wsim": "HRLM"
+        },
+        "suitability_index": {
+          "lo": 100.0,
+          "mid": 100.0,
+          "hi": 100.0
+        },
+        "class_shares": null,
+        "coverage_valid": 1.0,
+        "resolution_deg": 0.08333333333333333,
+        "field_to_cell_ratio": 0.04437000288563983
+      },
+      "rotation": {
+        "multiplier": {
+          "lo": 1.0,
+          "mid": 1.0,
+          "hi": 1.0
+        },
+        "rules_fired": []
+      },
+      "weather": {
+        "multiplier": {
+          "lo": 1.0,
+          "mid": 1.0,
+          "hi": 1.0
+        },
+        "signal": "disabled",
+        "risks": []
+      },
+      "satellite": {
+        "role": "history_check",
+        "effect_on_rank": "none",
+        "quality": "missing",
+        "obs_count_valid": 0,
+        "occupied": null,
+        "notes": [],
+        "issues": [
+          "SATELLITE_NOT_CONFIGURED"
+        ],
+        "available_at": null,
+        "sensor": null,
+        "native_resolution_m": null,
+        "processing_version": null,
+        "median_valid_pixel_fraction": null
+      },
+      "economics": {
+        "applied_to_rank": false,
+        "complete": false,
+        "price": null,
+        "yield_t_ha": null,
+        "revenue_uah_ha": null,
+        "costs_uah_ha": null,
+        "margin_uah_ha": null,
+        "issues": [
+          "ECON_YIELD_MISSING",
+          "ECON_COST_MISSING",
+          "ECON_PRICE_MISSING"
+        ],
+        "transformations": []
+      },
+      "stability": {
+        "p_top5": 1.0,
+        "rank_range": [
+          1,
+          1
+        ],
+        "rank_median": 1.0,
+        "label": "unavailable",
+        "main_driver": "spatial_GAEZ_endpoints_only",
+        "scenarios_evaluated": 3
+      },
+      "data_quality": {
+        "level": "medium",
+        "issues": [
+          "AGRONOMY_NOT_VALIDATED",
+          "GAEZ_CELL_NOT_FIELD_SOIL",
+          "ROBUSTNESS_SPATIAL_ONLY"
+        ]
+      },
+      "assumptions": [
+        "GAEZ_BASELINE: календарі посіву, сівозміна та погодні поправки вимкнені без затверджених правил",
+        "Локальні ґрунти, техніка й можливість своєчасного посіву потребують перевірки",
+        "Економічне ранжування вимкнене; урожайність не припускається"
+      ],
+      "reasons": [
+        {
+          "text": "Базова придатність за GAEZ: 100.000–100.000 (центральна 100.000).",
+          "trace_event_id": "explain:GAEZ_RESOLUTION:oat"
+        }
+      ],
+      "limitations": [
+        {
+          "text": "Базове порівняння за GAEZ потребує окремої перевірки сівозміни та строків посіву перед прийняттям рішення.",
+          "trace_event_id": "base_0001"
+        },
+        {
+          "text": "Оцінка GAEZ має крок 0.08333°; площа поля становить 4.44% типової комірки, тому растр не описує неоднорідність усередині поля.",
+          "trace_event_id": "explain:GAEZ_RESOLUTION:oat"
+        },
+        {
+          "text": "Агрооцінка є індексом придатності, а не ймовірністю успішного врожаю.",
+          "trace_event_id": "base_0001"
+        },
+        {
+          "text": "Відсутні дані: історія культур, супутникові індекси, погода.",
+          "trace_event_id": "explain:MISSING_SOURCES:oat"
+        },
+        {
+          "text": "Економічних даних недостатньо для порівняння маржі.",
+          "trace_event_id": "explain:ECONOMICS:oat"
+        },
+        {
+          "text": "Стійкість рейтингу до збурень параметрів не оцінена.",
+          "trace_event_id": "explain:STABILITY:oat"
+        }
+      ],
+      "near_tie_with": []
+    },
+    {
+      "rank": 2,
+      "crop_variant": "pea_dry",
+      "name_uk": "Горох сухий",
+      "tier": 1,
+      "status": "conditional",
+      "agro_score": {
+        "lo": 1.0,
+        "mid": 1.0,
+        "hi": 1.0
+      },
+      "gaez": {
+        "layer": "GAEZ-V5.RES05-SUX.HP0120.AGERA5.HIST.PEA.HRLM",
+        "crop_code": "PEA",
+        "match": "exact",
+        "scenario": {
+          "period": "HP0120",
+          "clim": "AGERA5",
+          "ssp": "HIST",
+          "wsim": "HRLM"
+        },
+        "suitability_index": {
+          "lo": 100.0,
+          "mid": 100.0,
+          "hi": 100.0
+        },
+        "class_shares": null,
+        "coverage_valid": 1.0,
+        "resolution_deg": 0.08333333333333333,
+        "field_to_cell_ratio": 0.04437000288563983
+      },
+      "rotation": {
+        "multiplier": {
+          "lo": 1.0,
+          "mid": 1.0,
+          "hi": 1.0
+        },
+        "rules_fired": []
+      },
+      "weather": {
+        "multiplier": {
+          "lo": 1.0,
+          "mid": 1.0,
+          "hi": 1.0
+        },
+        "signal": "disabled",
+        "risks": []
+      },
+      "satellite": {
+        "role": "history_check",
+        "effect_on_rank": "none",
+        "quality": "missing",
+        "obs_count_valid": 0,
+        "occupied": null,
+        "notes": [],
+        "issues": [
+          "SATELLITE_NOT_CONFIGURED"
+        ],
+        "available_at": null,
+        "sensor": null,
+        "native_resolution_m": null,
+        "processing_version": null,
+        "median_valid_pixel_fraction": null
+      },
+      "economics": {
+        "applied_to_rank": false,
+        "complete": false,
+        "price": null,
+        "yield_t_ha": null,
+        "revenue_uah_ha": null,
+        "costs_uah_ha": null,
+        "margin_uah_ha": null,
+        "issues": [
+          "ECON_YIELD_MISSING",
+          "ECON_COST_MISSING",
+          "ECON_PRICE_MISSING"
+        ],
+        "transformations": []
+      },
+      "stability": {
+        "p_top5": 1.0,
+        "rank_range": [
+          2,
+          2
+        ],
+        "rank_median": 2.0,
+        "label": "unavailable",
+        "main_driver": "spatial_GAEZ_endpoints_only",
+        "scenarios_evaluated": 3
+      },
+      "data_quality": {
+        "level": "medium",
+        "issues": [
+          "AGRONOMY_NOT_VALIDATED",
+          "GAEZ_CELL_NOT_FIELD_SOIL",
+          "ROBUSTNESS_SPATIAL_ONLY"
+        ]
+      },
+      "assumptions": [
+        "GAEZ_BASELINE: календарі посіву, сівозміна та погодні поправки вимкнені без затверджених правил",
+        "Локальні ґрунти, техніка й можливість своєчасного посіву потребують перевірки",
+        "Економічне ранжування вимкнене; урожайність не припускається"
+      ],
+      "reasons": [
+        {
+          "text": "Базова придатність за GAEZ: 100.000–100.000 (центральна 100.000).",
+          "trace_event_id": "explain:GAEZ_RESOLUTION:pea_dry"
+        }
+      ],
+      "limitations": [
+        {
+          "text": "Базове порівняння за GAEZ потребує окремої перевірки сівозміни та строків посіву перед прийняттям рішення.",
+          "trace_event_id": "base_0002"
+        },
+        {
+          "text": "Оцінка GAEZ має крок 0.08333°; площа поля становить 4.44% типової комірки, тому растр не описує неоднорідність усередині поля.",
+          "trace_event_id": "explain:GAEZ_RESOLUTION:pea_dry"
+        },
+        {
+          "text": "Агрооцінка є індексом придатності, а не ймовірністю успішного врожаю.",
+          "trace_event_id": "base_0002"
+        },
+        {
+          "text": "Відсутні дані: історія культур, супутникові індекси, погода.",
+          "trace_event_id": "explain:MISSING_SOURCES:pea_dry"
+        },
+        {
+          "text": "Економічних даних недостатньо для порівняння маржі.",
+          "trace_event_id": "explain:ECONOMICS:pea_dry"
+        },
+        {
+          "text": "Стійкість рейтингу до збурень параметрів не оцінена.",
+          "trace_event_id": "explain:STABILITY:pea_dry"
+        }
+      ],
+      "near_tie_with": []
+    },
+    {
+      "rank": 3,
+      "crop_variant": "sunflower",
+      "name_uk": "Соняшник",
+      "tier": 1,
+      "status": "conditional",
+      "agro_score": {
+        "lo": 1.0,
+        "mid": 1.0,
+        "hi": 1.0
+      },
+      "gaez": {
+        "layer": "GAEZ-V5.RES05-SUX.HP0120.AGERA5.HIST.SFL.HRLM",
+        "crop_code": "SFL",
+        "match": "exact",
+        "scenario": {
+          "period": "HP0120",
+          "clim": "AGERA5",
+          "ssp": "HIST",
+          "wsim": "HRLM"
+        },
+        "suitability_index": {
+          "lo": 100.0,
+          "mid": 100.0,
+          "hi": 100.0
+        },
+        "class_shares": null,
+        "coverage_valid": 1.0,
+        "resolution_deg": 0.08333333333333333,
+        "field_to_cell_ratio": 0.04437000288563983
+      },
+      "rotation": {
+        "multiplier": {
+          "lo": 1.0,
+          "mid": 1.0,
+          "hi": 1.0
+        },
+        "rules_fired": []
+      },
+      "weather": {
+        "multiplier": {
+          "lo": 1.0,
+          "mid": 1.0,
+          "hi": 1.0
+        },
+        "signal": "disabled",
+        "risks": []
+      },
+      "satellite": {
+        "role": "history_check",
+        "effect_on_rank": "none",
+        "quality": "missing",
+        "obs_count_valid": 0,
+        "occupied": null,
+        "notes": [],
+        "issues": [
+          "SATELLITE_NOT_CONFIGURED"
+        ],
+        "available_at": null,
+        "sensor": null,
+        "native_resolution_m": null,
+        "processing_version": null,
+        "median_valid_pixel_fraction": null
+      },
+      "economics": {
+        "applied_to_rank": false,
+        "complete": false,
+        "price": null,
+        "yield_t_ha": null,
+        "revenue_uah_ha": null,
+        "costs_uah_ha": null,
+        "margin_uah_ha": null,
+        "issues": [
+          "ECON_YIELD_MISSING",
+          "ECON_COST_MISSING",
+          "ECON_PRICE_MISSING"
+        ],
+        "transformations": []
+      },
+      "stability": {
+        "p_top5": 1.0,
+        "rank_range": [
+          3,
+          3
+        ],
+        "rank_median": 3.0,
+        "label": "unavailable",
+        "main_driver": "spatial_GAEZ_endpoints_only",
+        "scenarios_evaluated": 3
+      },
+      "data_quality": {
+        "level": "medium",
+        "issues": [
+          "AGRONOMY_NOT_VALIDATED",
+          "GAEZ_CELL_NOT_FIELD_SOIL",
+          "ROBUSTNESS_SPATIAL_ONLY"
+        ]
+      },
+      "assumptions": [
+        "GAEZ_BASELINE: календарі посіву, сівозміна та погодні поправки вимкнені без затверджених правил",
+        "Локальні ґрунти, техніка й можливість своєчасного посіву потребують перевірки",
+        "Економічне ранжування вимкнене; урожайність не припускається"
+      ],
+      "reasons": [
+        {
+          "text": "Базова придатність за GAEZ: 100.000–100.000 (центральна 100.000).",
+          "trace_event_id": "explain:GAEZ_RESOLUTION:sunflower"
+        }
+      ],
+      "limitations": [
+        {
+          "text": "Базове порівняння за GAEZ потребує окремої перевірки сівозміни та строків посіву перед прийняттям рішення.",
+          "trace_event_id": "base_0003"
+        },
+        {
+          "text": "Оцінка GAEZ має крок 0.08333°; площа поля становить 4.44% типової комірки, тому растр не описує неоднорідність усередині поля.",
+          "trace_event_id": "explain:GAEZ_RESOLUTION:sunflower"
+        },
+        {
+          "text": "Агрооцінка є індексом придатності, а не ймовірністю успішного врожаю.",
+          "trace_event_id": "base_0003"
+        },
+        {
+          "text": "Відсутні дані: історія культур, супутникові індекси, погода.",
+          "trace_event_id": "explain:MISSING_SOURCES:sunflower"
+        },
+        {
+          "text": "Економічних даних недостатньо для порівняння маржі.",
+          "trace_event_id": "explain:ECONOMICS:sunflower"
+        },
+        {
+          "text": "Стійкість рейтингу до збурень параметрів не оцінена.",
+          "trace_event_id": "explain:STABILITY:sunflower"
+        }
+      ],
+      "near_tie_with": []
+    },
+    {
+      "rank": 4,
+      "crop_variant": "wheat_spring",
+      "name_uk": "Пшениця яра",
+      "tier": 1,
+      "status": "conditional",
+      "agro_score": {
+        "lo": 1.0,
+        "mid": 1.0,
+        "hi": 1.0
+      },
+      "gaez": {
+        "layer": "GAEZ-V5.RES05-SUX.HP0120.AGERA5.HIST.WHE.HRLM",
+        "crop_code": "WHE",
+        "match": "parent_crop",
+        "scenario": {
+          "period": "HP0120",
+          "clim": "AGERA5",
+          "ssp": "HIST",
+          "wsim": "HRLM"
+        },
+        "suitability_index": {
+          "lo": 100.0,
+          "mid": 100.0,
+          "hi": 100.0
+        },
+        "class_shares": null,
+        "coverage_valid": 1.0,
+        "resolution_deg": 0.08333333333333333,
+        "field_to_cell_ratio": 0.04437000288563983
+      },
+      "rotation": {
+        "multiplier": {
+          "lo": 1.0,
+          "mid": 1.0,
+          "hi": 1.0
+        },
+        "rules_fired": []
+      },
+      "weather": {
+        "multiplier": {
+          "lo": 1.0,
+          "mid": 1.0,
+          "hi": 1.0
+        },
+        "signal": "disabled",
+        "risks": []
+      },
+      "satellite": {
+        "role": "history_check",
+        "effect_on_rank": "none",
+        "quality": "missing",
+        "obs_count_valid": 0,
+        "occupied": null,
+        "notes": [],
+        "issues": [
+          "SATELLITE_NOT_CONFIGURED"
+        ],
+        "available_at": null,
+        "sensor": null,
+        "native_resolution_m": null,
+        "processing_version": null,
+        "median_valid_pixel_fraction": null
+      },
+      "economics": {
+        "applied_to_rank": false,
+        "complete": false,
+        "price": null,
+        "yield_t_ha": null,
+        "revenue_uah_ha": null,
+        "costs_uah_ha": null,
+        "margin_uah_ha": null,
+        "issues": [
+          "ECON_YIELD_MISSING",
+          "ECON_COST_MISSING",
+          "ECON_PRICE_MISSING"
+        ],
+        "transformations": []
+      },
+      "stability": {
+        "p_top5": 1.0,
+        "rank_range": [
+          4,
+          4
+        ],
+        "rank_median": 4.0,
+        "label": "unavailable",
+        "main_driver": "spatial_GAEZ_endpoints_only",
+        "scenarios_evaluated": 3
+      },
+      "data_quality": {
+        "level": "medium",
+        "issues": [
+          "AGRONOMY_NOT_VALIDATED",
+          "GAEZ_CELL_NOT_FIELD_SOIL",
+          "ROBUSTNESS_SPATIAL_ONLY"
+        ]
+      },
+      "assumptions": [
+        "GAEZ_BASELINE: календарі посіву, сівозміна та погодні поправки вимкнені без затверджених правил",
+        "Локальні ґрунти, техніка й можливість своєчасного посіву потребують перевірки",
+        "Економічне ранжування вимкнене; урожайність не припускається"
+      ],
+      "reasons": [
+        {
+          "text": "Базова придатність за GAEZ: 100.000–100.000 (центральна 100.000).",
+          "trace_event_id": "explain:GAEZ_RESOLUTION:wheat_spring"
+        }
+      ],
+      "limitations": [
+        {
+          "text": "Базове порівняння за GAEZ потребує окремої перевірки сівозміни та строків посіву перед прийняттям рішення.",
+          "trace_event_id": "base_0004"
+        },
+        {
+          "text": "Оцінка GAEZ має крок 0.08333°; площа поля становить 4.44% типової комірки, тому растр не описує неоднорідність усередині поля.",
+          "trace_event_id": "explain:GAEZ_RESOLUTION:wheat_spring"
+        },
+        {
+          "text": "GAEZ використовує спільний код WHE для культури; озимий і ярий варіанти окремо не оцінені.",
+          "trace_event_id": "explain:GAEZ_RESOLUTION:wheat_spring"
+        },
+        {
+          "text": "Агрооцінка є індексом придатності, а не ймовірністю успішного врожаю.",
+          "trace_event_id": "base_0004"
+        },
+        {
+          "text": "Відсутні дані: історія культур, супутникові індекси, погода.",
+          "trace_event_id": "explain:MISSING_SOURCES:wheat_spring"
+        },
+        {
+          "text": "Економічних даних недостатньо для порівняння маржі.",
+          "trace_event_id": "explain:ECONOMICS:wheat_spring"
+        },
+        {
+          "text": "Стійкість рейтингу до збурень параметрів не оцінена.",
+          "trace_event_id": "explain:STABILITY:wheat_spring"
+        }
+      ],
+      "near_tie_with": []
+    },
+    {
+      "rank": 5,
+      "crop_variant": "maize_grain",
+      "name_uk": "Кукурудза на зерно",
+      "tier": 2,
+      "status": "conditional",
+      "agro_score": {
+        "lo": 0.7778,
+        "mid": 0.7778,
+        "hi": 0.7778
+      },
+      "gaez": {
+        "layer": "GAEZ-V5.RES05-SUX.HP0120.AGERA5.HIST.MZE.HRLM",
+        "crop_code": "MZE",
+        "match": "exact",
+        "scenario": {
+          "period": "HP0120",
+          "clim": "AGERA5",
+          "ssp": "HIST",
+          "wsim": "HRLM"
+        },
+        "suitability_index": {
+          "lo": 77.78,
+          "mid": 77.78,
+          "hi": 77.78
+        },
+        "class_shares": null,
+        "coverage_valid": 1.0,
+        "resolution_deg": 0.08333333333333333,
+        "field_to_cell_ratio": 0.04437000288563983
+      },
+      "rotation": {
+        "multiplier": {
+          "lo": 1.0,
+          "mid": 1.0,
+          "hi": 1.0
+        },
+        "rules_fired": []
+      },
+      "weather": {
+        "multiplier": {
+          "lo": 1.0,
+          "mid": 1.0,
+          "hi": 1.0
+        },
+        "signal": "disabled",
+        "risks": []
+      },
+      "satellite": {
+        "role": "history_check",
+        "effect_on_rank": "none",
+        "quality": "missing",
+        "obs_count_valid": 0,
+        "occupied": null,
+        "notes": [],
+        "issues": [
+          "SATELLITE_NOT_CONFIGURED"
+        ],
+        "available_at": null,
+        "sensor": null,
+        "native_resolution_m": null,
+        "processing_version": null,
+        "median_valid_pixel_fraction": null
+      },
+      "economics": {
+        "applied_to_rank": false,
+        "complete": false,
+        "price": null,
+        "yield_t_ha": null,
+        "revenue_uah_ha": null,
+        "costs_uah_ha": null,
+        "margin_uah_ha": null,
+        "issues": [
+          "ECON_YIELD_MISSING",
+          "ECON_COST_MISSING",
+          "ECON_PRICE_MISSING"
+        ],
+        "transformations": []
+      },
+      "stability": {
+        "p_top5": 1.0,
+        "rank_range": [
+          5,
+          5
+        ],
+        "rank_median": 5.0,
+        "label": "unavailable",
+        "main_driver": "spatial_GAEZ_endpoints_only",
+        "scenarios_evaluated": 3
+      },
+      "data_quality": {
+        "level": "medium",
+        "issues": [
+          "AGRONOMY_NOT_VALIDATED",
+          "GAEZ_CELL_NOT_FIELD_SOIL",
+          "ROBUSTNESS_SPATIAL_ONLY"
+        ]
+      },
+      "assumptions": [
+        "GAEZ_BASELINE: календарі посіву, сівозміна та погодні поправки вимкнені без затверджених правил",
+        "Локальні ґрунти, техніка й можливість своєчасного посіву потребують перевірки",
+        "Економічне ранжування вимкнене; урожайність не припускається"
+      ],
+      "reasons": [
+        {
+          "text": "Базова придатність за GAEZ: 77.780–77.780 (центральна 77.780).",
+          "trace_event_id": "explain:GAEZ_RESOLUTION:maize_grain"
+        }
+      ],
+      "limitations": [
+        {
+          "text": "Базове порівняння за GAEZ потребує окремої перевірки сівозміни та строків посіву перед прийняттям рішення.",
+          "trace_event_id": "base_0005"
+        },
+        {
+          "text": "Оцінка GAEZ має крок 0.08333°; площа поля становить 4.44% типової комірки, тому растр не описує неоднорідність усередині поля.",
+          "trace_event_id": "explain:GAEZ_RESOLUTION:maize_grain"
+        },
+        {
+          "text": "Агрооцінка є індексом придатності, а не ймовірністю успішного врожаю.",
+          "trace_event_id": "base_0005"
+        },
+        {
+          "text": "Відсутні дані: історія культур, супутникові індекси, погода.",
+          "trace_event_id": "explain:MISSING_SOURCES:maize_grain"
+        },
+        {
+          "text": "Економічних даних недостатньо для порівняння маржі.",
+          "trace_event_id": "explain:ECONOMICS:maize_grain"
+        },
+        {
+          "text": "Стійкість рейтингу до збурень параметрів не оцінена.",
+          "trace_event_id": "explain:STABILITY:maize_grain"
+        }
+      ],
+      "near_tie_with": []
+    }
+  ],
+  "excluded": [],
+  "below_threshold": [],
+  "not_evaluated": [],
+  "requests_for_input": [],
+  "data_quality": {
+    "overall": "medium",
+    "by_source": {
+      "gaez": "medium",
+      "history": "missing",
+      "satellite": "missing",
+      "weather": "missing"
+    }
+  },
+  "provenance": {
+    "algorithm_version": "gaez-baseline-1.0.0",
+    "rules_version": "rules-ua-review-0.1.0+d8e4e547ad15",
+    "snapshot_id": "snap_a2910a848834d41fbfc6cbc5cf37c791",
+    "gaez_layers": [
+      {
+        "code": "GAEZ-V5.RES05-SUX.HP0120.AGERA5.HIST.BRL.HRLM",
+        "sha256": "207419df309078d53240c71c603cad7e95d7f24ec0bee8408062c0142659fdf9",
+        "source_url": "https://storage.googleapis.com/download/storage/v1/b/fao-gismgr-gaez-v5-data/o/DATA%2FGAEZ-V5%2FMAPSET%2FRES05-SUX%2FGAEZ-V5.RES05-SUX.HP0120.AGERA5.HIST.BRL.HRLM.tif?generation=1739819671442305&alt=media"
+      },
+      {
+        "code": "GAEZ-V5.RES05-SUX.HP0120.AGERA5.HIST.MZE.HRLM",
+        "sha256": "c899f4d383c20f7b2e44baccd6b6d04cf57c3de08b895d363a1aea9887bf45a4",
+        "source_url": "https://storage.googleapis.com/download/storage/v1/b/fao-gismgr-gaez-v5-data/o/DATA%2FGAEZ-V5%2FMAPSET%2FRES05-SUX%2FGAEZ-V5.RES05-SUX.HP0120.AGERA5.HIST.MZE.HRLM.tif?generation=1739820141659050&alt=media"
+      },
+      {
+        "code": "GAEZ-V5.RES05-SUX.HP0120.AGERA5.HIST.OAT.HRLM",
+        "sha256": "1aa771bc047ad3b2438a142b5c7ebc94239593302465f5ae352de6461ba14d84",
+        "source_url": "https://storage.googleapis.com/download/storage/v1/b/fao-gismgr-gaez-v5-data/o/DATA%2FGAEZ-V5%2FMAPSET%2FRES05-SUX%2FGAEZ-V5.RES05-SUX.HP0120.AGERA5.HIST.OAT.HRLM.tif?generation=1739820232915597&alt=media"
+      },
+      {
+        "code": "GAEZ-V5.RES05-SUX.HP0120.AGERA5.HIST.PEA.HRLM",
+        "sha256": "938b43d5bad4b047627ca4825893ec894c4cf5dda8fde675f734cb5e67f1ba5b",
+        "source_url": "https://storage.googleapis.com/download/storage/v1/b/fao-gismgr-gaez-v5-data/o/DATA%2FGAEZ-V5%2FMAPSET%2FRES05-SUX%2FGAEZ-V5.RES05-SUX.HP0120.AGERA5.HIST.PEA.HRLM.tif?generation=1739820308792745&alt=media"
+      },
+      {
+        "code": "GAEZ-V5.RES05-SUX.HP0120.AGERA5.HIST.SFL.HRLM",
+        "sha256": "c6cda609466172a733c5e8a7435a60a115bc2aec272bccd4e25b8d49db4893e0",
+        "source_url": "https://storage.googleapis.com/download/storage/v1/b/fao-gismgr-gaez-v5-data/o/DATA%2FGAEZ-V5%2FMAPSET%2FRES05-SUX%2FGAEZ-V5.RES05-SUX.HP0120.AGERA5.HIST.SFL.HRLM.tif?generation=1739820644438722&alt=media"
+      },
+      {
+        "code": "GAEZ-V5.RES05-SUX.HP0120.AGERA5.HIST.SOY.HRLM",
+        "sha256": "84ee18549a2d1162947611dd193d548bacbf39ac74e89e962cbb9d753472e578",
+        "source_url": "https://storage.googleapis.com/download/storage/v1/b/fao-gismgr-gaez-v5-data/o/DATA%2FGAEZ-V5%2FMAPSET%2FRES05-SUX%2FGAEZ-V5.RES05-SUX.HP0120.AGERA5.HIST.SOY.HRLM.tif?generation=1739820577144572&alt=media"
+      },
+      {
+        "code": "GAEZ-V5.RES05-SUX.HP0120.AGERA5.HIST.SUB.HRLM",
+        "sha256": "9d3a7bef5f574a73e2be71f7d47b615c305cec110399237bd6420c5ce8b416ba",
+        "source_url": "https://storage.googleapis.com/download/storage/v1/b/fao-gismgr-gaez-v5-data/o/DATA%2FGAEZ-V5%2FMAPSET%2FRES05-SUX%2FGAEZ-V5.RES05-SUX.HP0120.AGERA5.HIST.SUB.HRLM.tif?generation=1739820660767684&alt=media"
+      },
+      {
+        "code": "GAEZ-V5.RES05-SUX.HP0120.AGERA5.HIST.WHE.HRLM",
+        "sha256": "10256daf6b18323597cfdf61f2b5567e116ba65ec0e6ddb0ee0d40a73366fb08",
+        "source_url": "https://storage.googleapis.com/download/storage/v1/b/fao-gismgr-gaez-v5-data/o/DATA%2FGAEZ-V5%2FMAPSET%2FRES05-SUX%2FGAEZ-V5.RES05-SUX.HP0120.AGERA5.HIST.WHE.HRLM.tif?generation=1739820821852018&alt=media"
+      }
+    ],
+    "weather": [],
+    "price_ids": [],
+    "robustness_grid_hash": "1b205dd47963b42d7617546b5176618aba3c9511494942c6c0cfb6b83e749135",
+    "source_errors": [],
+    "demo": false
+  },
+  "trace": [
+    {
+      "id": "base_0001",
+      "code": "BASELINE_GAEZ",
+      "crop": "oat",
+      "params": {
+        "score": {
+          "lo": 1.0,
+          "mid": 1.0,
+          "hi": 1.0
+        },
+        "wsim": "HRLM",
+        "layer": "GAEZ-V5.RES05-SUX.HP0120.AGERA5.HIST.OAT.HRLM",
+        "source_sha256": "1aa771bc047ad3b2438a142b5c7ebc94239593302465f5ae352de6461ba14d84",
+        "fallback": false,
+        "coverage_valid": 1.0,
+        "disabled": [
+          "rotation",
+          "sowing_windows",
+          "weather_score",
+          "economic_rank"
+        ]
+      },
+      "source_refs": []
+    },
+    {
+      "id": "base_0002",
+      "code": "BASELINE_GAEZ",
+      "crop": "pea_dry",
+      "params": {
+        "score": {
+          "lo": 1.0,
+          "mid": 1.0,
+          "hi": 1.0
+        },
+        "wsim": "HRLM",
+        "layer": "GAEZ-V5.RES05-SUX.HP0120.AGERA5.HIST.PEA.HRLM",
+        "source_sha256": "938b43d5bad4b047627ca4825893ec894c4cf5dda8fde675f734cb5e67f1ba5b",
+        "fallback": false,
+        "coverage_valid": 1.0,
+        "disabled": [
+          "rotation",
+          "sowing_windows",
+          "weather_score",
+          "economic_rank"
+        ]
+      },
+      "source_refs": []
+    },
+    {
+      "id": "base_0003",
+      "code": "BASELINE_GAEZ",
+      "crop": "sunflower",
+      "params": {
+        "score": {
+          "lo": 1.0,
+          "mid": 1.0,
+          "hi": 1.0
+        },
+        "wsim": "HRLM",
+        "layer": "GAEZ-V5.RES05-SUX.HP0120.AGERA5.HIST.SFL.HRLM",
+        "source_sha256": "c6cda609466172a733c5e8a7435a60a115bc2aec272bccd4e25b8d49db4893e0",
+        "fallback": false,
+        "coverage_valid": 1.0,
+        "disabled": [
+          "rotation",
+          "sowing_windows",
+          "weather_score",
+          "economic_rank"
+        ]
+      },
+      "source_refs": []
+    },
+    {
+      "id": "base_0004",
+      "code": "BASELINE_GAEZ",
+      "crop": "wheat_spring",
+      "params": {
+        "score": {
+          "lo": 1.0,
+          "mid": 1.0,
+          "hi": 1.0
+        },
+        "wsim": "HRLM",
+        "layer": "GAEZ-V5.RES05-SUX.HP0120.AGERA5.HIST.WHE.HRLM",
+        "source_sha256": "10256daf6b18323597cfdf61f2b5567e116ba65ec0e6ddb0ee0d40a73366fb08",
+        "fallback": false,
+        "coverage_valid": 1.0,
+        "disabled": [
+          "rotation",
+          "sowing_windows",
+          "weather_score",
+          "economic_rank"
+        ]
+      },
+      "source_refs": []
+    },
+    {
+      "id": "base_0005",
+      "code": "BASELINE_GAEZ",
+      "crop": "maize_grain",
+      "params": {
+        "score": {
+          "lo": 0.7778,
+          "mid": 0.7778,
+          "hi": 0.7778
+        },
+        "wsim": "HRLM",
+        "layer": "GAEZ-V5.RES05-SUX.HP0120.AGERA5.HIST.MZE.HRLM",
+        "source_sha256": "c899f4d383c20f7b2e44baccd6b6d04cf57c3de08b895d363a1aea9887bf45a4",
+        "fallback": false,
+        "coverage_valid": 1.0,
+        "disabled": [
+          "rotation",
+          "sowing_windows",
+          "weather_score",
+          "economic_rank"
+        ]
+      },
+      "source_refs": []
+    },
+    {
+      "id": "base_0006",
+      "code": "BASELINE_POLICY",
+      "crop": null,
+      "params": {
+        "mode": "LIMITED",
+        "profile": "gaez_baseline",
+        "scope": "UA",
+        "conditional_limit": "up_to_5_potential_candidates",
+        "expert_review": false
+      },
+      "source_refs": []
+    },
+    {
+      "id": "explain:GAEZ_RESOLUTION:oat",
+      "code": "GAEZ_RESOLUTION",
+      "crop": "oat",
+      "params": {
+        "layer": "GAEZ-V5.RES05-SUX.HP0120.AGERA5.HIST.OAT.HRLM",
+        "crop_code": "OAT",
+        "match": "exact",
+        "scenario": {
+          "period": "HP0120",
+          "clim": "AGERA5",
+          "ssp": "HIST",
+          "wsim": "HRLM"
+        },
+        "suitability_index": {
+          "lo": 100.0,
+          "mid": 100.0,
+          "hi": 100.0
+        },
+        "class_shares": null,
+        "coverage_valid": 1.0,
+        "resolution_deg": 0.08333333333333333,
+        "field_to_cell_ratio": 0.04437000288563983
+      },
+      "source_refs": [
+        "GAEZ-V5.RES05-SUX.HP0120.AGERA5.HIST.OAT.HRLM"
+      ]
+    },
+    {
+      "id": "explain:MISSING_SOURCES:oat",
+      "code": "MISSING_SOURCES",
+      "crop": "oat",
+      "params": {
+        "sources": [
+          "history",
+          "satellite",
+          "weather"
+        ]
+      },
+      "source_refs": []
+    },
+    {
+      "id": "explain:ECONOMICS:oat",
+      "code": "ECONOMICS",
+      "crop": "oat",
+      "params": {
+        "applied_to_rank": false,
+        "complete": false,
+        "price": null,
+        "yield_t_ha": null,
+        "revenue_uah_ha": null,
+        "costs_uah_ha": null,
+        "margin_uah_ha": null,
+        "issues": [
+          "ECON_YIELD_MISSING",
+          "ECON_COST_MISSING",
+          "ECON_PRICE_MISSING"
+        ],
+        "transformations": []
+      },
+      "source_refs": []
+    },
+    {
+      "id": "explain:STABILITY:oat",
+      "code": "STABILITY",
+      "crop": "oat",
+      "params": {
+        "p_top5": 1.0,
+        "rank_range": [
+          1,
+          1
+        ],
+        "rank_median": 1.0,
+        "label": "unavailable",
+        "main_driver": "spatial_GAEZ_endpoints_only",
+        "scenarios_evaluated": 3
+      },
+      "source_refs": []
+    },
+    {
+      "id": "explain:GAEZ_RESOLUTION:pea_dry",
+      "code": "GAEZ_RESOLUTION",
+      "crop": "pea_dry",
+      "params": {
+        "layer": "GAEZ-V5.RES05-SUX.HP0120.AGERA5.HIST.PEA.HRLM",
+        "crop_code": "PEA",
+        "match": "exact",
+        "scenario": {
+          "period": "HP0120",
+          "clim": "AGERA5",
+          "ssp": "HIST",
+          "wsim": "HRLM"
+        },
+        "suitability_index": {
+          "lo": 100.0,
+          "mid": 100.0,
+          "hi": 100.0
+        },
+        "class_shares": null,
+        "coverage_valid": 1.0,
+        "resolution_deg": 0.08333333333333333,
+        "field_to_cell_ratio": 0.04437000288563983
+      },
+      "source_refs": [
+        "GAEZ-V5.RES05-SUX.HP0120.AGERA5.HIST.PEA.HRLM"
+      ]
+    },
+    {
+      "id": "explain:MISSING_SOURCES:pea_dry",
+      "code": "MISSING_SOURCES",
+      "crop": "pea_dry",
+      "params": {
+        "sources": [
+          "history",
+          "satellite",
+          "weather"
+        ]
+      },
+      "source_refs": []
+    },
+    {
+      "id": "explain:ECONOMICS:pea_dry",
+      "code": "ECONOMICS",
+      "crop": "pea_dry",
+      "params": {
+        "applied_to_rank": false,
+        "complete": false,
+        "price": null,
+        "yield_t_ha": null,
+        "revenue_uah_ha": null,
+        "costs_uah_ha": null,
+        "margin_uah_ha": null,
+        "issues": [
+          "ECON_YIELD_MISSING",
+          "ECON_COST_MISSING",
+          "ECON_PRICE_MISSING"
+        ],
+        "transformations": []
+      },
+      "source_refs": []
+    },
+    {
+      "id": "explain:STABILITY:pea_dry",
+      "code": "STABILITY",
+      "crop": "pea_dry",
+      "params": {
+        "p_top5": 1.0,
+        "rank_range": [
+          2,
+          2
+        ],
+        "rank_median": 2.0,
+        "label": "unavailable",
+        "main_driver": "spatial_GAEZ_endpoints_only",
+        "scenarios_evaluated": 3
+      },
+      "source_refs": []
+    },
+    {
+      "id": "explain:GAEZ_RESOLUTION:sunflower",
+      "code": "GAEZ_RESOLUTION",
+      "crop": "sunflower",
+      "params": {
+        "layer": "GAEZ-V5.RES05-SUX.HP0120.AGERA5.HIST.SFL.HRLM",
+        "crop_code": "SFL",
+        "match": "exact",
+        "scenario": {
+          "period": "HP0120",
+          "clim": "AGERA5",
+          "ssp": "HIST",
+          "wsim": "HRLM"
+        },
+        "suitability_index": {
+          "lo": 100.0,
+          "mid": 100.0,
+          "hi": 100.0
+        },
+        "class_shares": null,
+        "coverage_valid": 1.0,
+        "resolution_deg": 0.08333333333333333,
+        "field_to_cell_ratio": 0.04437000288563983
+      },
+      "source_refs": [
+        "GAEZ-V5.RES05-SUX.HP0120.AGERA5.HIST.SFL.HRLM"
+      ]
+    },
+    {
+      "id": "explain:MISSING_SOURCES:sunflower",
+      "code": "MISSING_SOURCES",
+      "crop": "sunflower",
+      "params": {
+        "sources": [
+          "history",
+          "satellite",
+          "weather"
+        ]
+      },
+      "source_refs": []
+    },
+    {
+      "id": "explain:ECONOMICS:sunflower",
+      "code": "ECONOMICS",
+      "crop": "sunflower",
+      "params": {
+        "applied_to_rank": false,
+        "complete": false,
+        "price": null,
+        "yield_t_ha": null,
+        "revenue_uah_ha": null,
+        "costs_uah_ha": null,
+        "margin_uah_ha": null,
+        "issues": [
+          "ECON_YIELD_MISSING",
+          "ECON_COST_MISSING",
+          "ECON_PRICE_MISSING"
+        ],
+        "transformations": []
+      },
+      "source_refs": []
+    },
+    {
+      "id": "explain:STABILITY:sunflower",
+      "code": "STABILITY",
+      "crop": "sunflower",
+      "params": {
+        "p_top5": 1.0,
+        "rank_range": [
+          3,
+          3
+        ],
+        "rank_median": 3.0,
+        "label": "unavailable",
+        "main_driver": "spatial_GAEZ_endpoints_only",
+        "scenarios_evaluated": 3
+      },
+      "source_refs": []
+    },
+    {
+      "id": "explain:GAEZ_RESOLUTION:wheat_spring",
+      "code": "GAEZ_RESOLUTION",
+      "crop": "wheat_spring",
+      "params": {
+        "layer": "GAEZ-V5.RES05-SUX.HP0120.AGERA5.HIST.WHE.HRLM",
+        "crop_code": "WHE",
+        "match": "parent_crop",
+        "scenario": {
+          "period": "HP0120",
+          "clim": "AGERA5",
+          "ssp": "HIST",
+          "wsim": "HRLM"
+        },
+        "suitability_index": {
+          "lo": 100.0,
+          "mid": 100.0,
+          "hi": 100.0
+        },
+        "class_shares": null,
+        "coverage_valid": 1.0,
+        "resolution_deg": 0.08333333333333333,
+        "field_to_cell_ratio": 0.04437000288563983
+      },
+      "source_refs": [
+        "GAEZ-V5.RES05-SUX.HP0120.AGERA5.HIST.WHE.HRLM"
+      ]
+    },
+    {
+      "id": "explain:MISSING_SOURCES:wheat_spring",
+      "code": "MISSING_SOURCES",
+      "crop": "wheat_spring",
+      "params": {
+        "sources": [
+          "history",
+          "satellite",
+          "weather"
+        ]
+      },
+      "source_refs": []
+    },
+    {
+      "id": "explain:ECONOMICS:wheat_spring",
+      "code": "ECONOMICS",
+      "crop": "wheat_spring",
+      "params": {
+        "applied_to_rank": false,
+        "complete": false,
+        "price": null,
+        "yield_t_ha": null,
+        "revenue_uah_ha": null,
+        "costs_uah_ha": null,
+        "margin_uah_ha": null,
+        "issues": [
+          "ECON_YIELD_MISSING",
+          "ECON_COST_MISSING",
+          "ECON_PRICE_MISSING"
+        ],
+        "transformations": []
+      },
+      "source_refs": []
+    },
+    {
+      "id": "explain:STABILITY:wheat_spring",
+      "code": "STABILITY",
+      "crop": "wheat_spring",
+      "params": {
+        "p_top5": 1.0,
+        "rank_range": [
+          4,
+          4
+        ],
+        "rank_median": 4.0,
+        "label": "unavailable",
+        "main_driver": "spatial_GAEZ_endpoints_only",
+        "scenarios_evaluated": 3
+      },
+      "source_refs": []
+    },
+    {
+      "id": "explain:GAEZ_RESOLUTION:maize_grain",
+      "code": "GAEZ_RESOLUTION",
+      "crop": "maize_grain",
+      "params": {
+        "layer": "GAEZ-V5.RES05-SUX.HP0120.AGERA5.HIST.MZE.HRLM",
+        "crop_code": "MZE",
+        "match": "exact",
+        "scenario": {
+          "period": "HP0120",
+          "clim": "AGERA5",
+          "ssp": "HIST",
+          "wsim": "HRLM"
+        },
+        "suitability_index": {
+          "lo": 77.78,
+          "mid": 77.78,
+          "hi": 77.78
+        },
+        "class_shares": null,
+        "coverage_valid": 1.0,
+        "resolution_deg": 0.08333333333333333,
+        "field_to_cell_ratio": 0.04437000288563983
+      },
+      "source_refs": [
+        "GAEZ-V5.RES05-SUX.HP0120.AGERA5.HIST.MZE.HRLM"
+      ]
+    },
+    {
+      "id": "explain:MISSING_SOURCES:maize_grain",
+      "code": "MISSING_SOURCES",
+      "crop": "maize_grain",
+      "params": {
+        "sources": [
+          "history",
+          "satellite",
+          "weather"
+        ]
+      },
+      "source_refs": []
+    },
+    {
+      "id": "explain:ECONOMICS:maize_grain",
+      "code": "ECONOMICS",
+      "crop": "maize_grain",
+      "params": {
+        "applied_to_rank": false,
+        "complete": false,
+        "price": null,
+        "yield_t_ha": null,
+        "revenue_uah_ha": null,
+        "costs_uah_ha": null,
+        "margin_uah_ha": null,
+        "issues": [
+          "ECON_YIELD_MISSING",
+          "ECON_COST_MISSING",
+          "ECON_PRICE_MISSING"
+        ],
+        "transformations": []
+      },
+      "source_refs": []
+    },
+    {
+      "id": "explain:STABILITY:maize_grain",
+      "code": "STABILITY",
+      "crop": "maize_grain",
+      "params": {
+        "p_top5": 1.0,
+        "rank_range": [
+          5,
+          5
+        ],
+        "rank_median": 5.0,
+        "label": "unavailable",
+        "main_driver": "spatial_GAEZ_endpoints_only",
+        "scenarios_evaluated": 3
+      },
+      "source_refs": []
+    }
+  ]
+}

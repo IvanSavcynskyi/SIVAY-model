@@ -1,0 +1,11 @@
+{
+  "csv": "crop,price\nwheat_spring,8500\nbarley_spring,7200\nmaize_grain,7800\nsoybean,17000\nsunflower,22000\n",
+  "currency": "UAH",
+  "unit": "t",
+  "price_date": "2026-10-20",
+  "published_at": "2026-10-20T00:00:00Z",
+  "incoterm": "EXW",
+  "vat_included": false,
+  "region": "UA",
+  "source": "EXAMPLE_ONLY_REPLACE_WITH_YOUR_TABLE"
+}

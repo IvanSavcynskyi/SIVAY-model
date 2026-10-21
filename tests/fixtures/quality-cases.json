@@ -1,0 +1,517 @@
+{
+  "description": "Synthetic deterministic arithmetic fixture; not a real farm or expert oracle. No observed yield or expert judgment.",
+  "cases": [
+    {
+      "case_id": "synthetic-section8",
+      "request": {
+        "field": {
+          "field_id": "synthetic-quality",
+          "geometry": {
+            "type": "Polygon",
+            "coordinates": [
+              [
+                [
+                  34.5,
+                  49.6
+                ],
+                [
+                  34.51,
+                  49.6
+                ],
+                [
+                  34.51,
+                  49.61
+                ],
+                [
+                  34.5,
+                  49.61
+                ],
+                [
+                  34.5,
+                  49.6
+                ]
+              ]
+            ]
+          },
+          "crs": "EPSG:4326"
+        },
+        "as_of_date": "2026-09-01",
+        "target_season": {
+          "harvest_year": 2027,
+          "include": [
+            "spring"
+          ]
+        },
+        "crop_history": [],
+        "history_gaps": [],
+        "management": {
+          "input_level": "high",
+          "irrigation": "none"
+        },
+        "constraints": {
+          "excluded_crops": [],
+          "notes": null
+        },
+        "economics": null,
+        "options": {
+          "max_results": 5,
+          "language": "uk"
+        }
+      },
+      "snapshot": {
+        "snapshot_id": "synthetic-quality-v1",
+        "field_id": "synthetic-quality",
+        "geom_hash": "synthetic-geometry",
+        "as_of_date": "2026-09-01",
+        "prepared_at": "2026-09-01T12:00:00Z",
+        "region": "UA-53",
+        "gaez": {
+          "BRL": [
+            {
+              "layer_code": "SYNTHETIC-SUX.BRL",
+              "variable": "SUX",
+              "unit": "index",
+              "crop_code": "BRL",
+              "wsim": "HRLM",
+              "period": "HP0120",
+              "clim": "AGERA5",
+              "ssp": "HIST",
+              "native_res_deg": 0.08333333333333333,
+              "field_area_ha": 50.0,
+              "cell_area_ha_mean": 5000.0,
+              "field_to_cell_ratio": 0.01,
+              "coverage_valid": 1.0,
+              "n_cells": 2,
+              "mean_w": 7200.0,
+              "min": null,
+              "max": null,
+              "class_shares": null,
+              "water_share": null,
+              "dominant_class": null,
+              "worst_class": null,
+              "per_cell": [
+                {
+                  "value": 6600.0,
+                  "area_fraction": 0.5,
+                  "row": null,
+                  "col": null
+                },
+                {
+                  "value": 7500.0,
+                  "area_fraction": 0.5,
+                  "row": null,
+                  "col": null
+                }
+              ],
+              "source_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "retrieved_at": "2026-09-01T12:00:00Z",
+              "available_at": "2026-09-01T12:00:00Z",
+              "source_url": null
+            }
+          ],
+          "MZE": [
+            {
+              "layer_code": "SYNTHETIC-SUX.MZE",
+              "variable": "SUX",
+              "unit": "index",
+              "crop_code": "MZE",
+              "wsim": "HRLM",
+              "period": "HP0120",
+              "clim": "AGERA5",
+              "ssp": "HIST",
+              "native_res_deg": 0.08333333333333333,
+              "field_area_ha": 50.0,
+              "cell_area_ha_mean": 5000.0,
+              "field_to_cell_ratio": 0.01,
+              "coverage_valid": 1.0,
+              "n_cells": 2,
+              "mean_w": 7400.0,
+              "min": null,
+              "max": null,
+              "class_shares": null,
+              "water_share": null,
+              "dominant_class": null,
+              "worst_class": null,
+              "per_cell": [
+                {
+                  "value": 6600.0,
+                  "area_fraction": 0.5,
+                  "row": null,
+                  "col": null
+                },
+                {
+                  "value": 7700.0,
+                  "area_fraction": 0.5,
+                  "row": null,
+                  "col": null
+                }
+              ],
+              "source_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "retrieved_at": "2026-09-01T12:00:00Z",
+              "available_at": "2026-09-01T12:00:00Z",
+              "source_url": null
+            }
+          ],
+          "PEA": [
+            {
+              "layer_code": "SYNTHETIC-SUX.PEA",
+              "variable": "SUX",
+              "unit": "index",
+              "crop_code": "PEA",
+              "wsim": "HRLM",
+              "period": "HP0120",
+              "clim": "AGERA5",
+              "ssp": "HIST",
+              "native_res_deg": 0.08333333333333333,
+              "field_area_ha": 50.0,
+              "cell_area_ha_mean": 5000.0,
+              "field_to_cell_ratio": 0.01,
+              "coverage_valid": 1.0,
+              "n_cells": 2,
+              "mean_w": 6800.0,
+              "min": null,
+              "max": null,
+              "class_shares": null,
+              "water_share": null,
+              "dominant_class": null,
+              "worst_class": null,
+              "per_cell": [
+                {
+                  "value": 6200.0,
+                  "area_fraction": 0.5,
+                  "row": null,
+                  "col": null
+                },
+                {
+                  "value": 7100.0,
+                  "area_fraction": 0.5,
+                  "row": null,
+                  "col": null
+                }
+              ],
+              "source_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "retrieved_at": "2026-09-01T12:00:00Z",
+              "available_at": "2026-09-01T12:00:00Z",
+              "source_url": null
+            }
+          ],
+          "SUB": [
+            {
+              "layer_code": "SYNTHETIC-SUX.SUB",
+              "variable": "SUX",
+              "unit": "index",
+              "crop_code": "SUB",
+              "wsim": "HRLM",
+              "period": "HP0120",
+              "clim": "AGERA5",
+              "ssp": "HIST",
+              "native_res_deg": 0.08333333333333333,
+              "field_area_ha": 50.0,
+              "cell_area_ha_mean": 5000.0,
+              "field_to_cell_ratio": 0.01,
+              "coverage_valid": 1.0,
+              "n_cells": 2,
+              "mean_w": 7000.0,
+              "min": null,
+              "max": null,
+              "class_shares": null,
+              "water_share": null,
+              "dominant_class": null,
+              "worst_class": null,
+              "per_cell": [
+                {
+                  "value": 6000.0,
+                  "area_fraction": 0.5,
+                  "row": null,
+                  "col": null
+                },
+                {
+                  "value": 7300.0,
+                  "area_fraction": 0.5,
+                  "row": null,
+                  "col": null
+                }
+              ],
+              "source_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "retrieved_at": "2026-09-01T12:00:00Z",
+              "available_at": "2026-09-01T12:00:00Z",
+              "source_url": null
+            }
+          ]
+        },
+        "history": {
+          "records": [
+            {
+              "record_id": null,
+              "season_year": 2026,
+              "crop": "sunflower",
+              "variant": null,
+              "role": "main",
+              "status": "harvested",
+              "sowing_date": null,
+              "harvest_date": null,
+              "sowing_date_precision": "day",
+              "harvest_date_precision": "day",
+              "harvest_date_planned": null,
+              "yield_t_ha": null,
+              "source": "user_memory",
+              "reliability": "high",
+              "available_at": null
+            }
+          ],
+          "gaps": [],
+          "current_crop": null,
+          "occupied": false,
+          "quality": "high",
+          "issues": []
+        },
+        "weather": {
+          "available_at": null,
+          "signal": "unknown",
+          "moisture_percentile": null,
+          "precipitation_percentile": null,
+          "multiplier": null,
+          "quality": "missing",
+          "risks": [],
+          "provenance": [],
+          "issues": []
+        },
+        "satellite": {
+          "role": "history_check",
+          "effect_on_rank": "none",
+          "quality": "missing",
+          "obs_count_valid": 0,
+          "occupied": null,
+          "notes": [],
+          "issues": [],
+          "available_at": null,
+          "sensor": null,
+          "native_resolution_m": null,
+          "processing_version": null,
+          "median_valid_pixel_fraction": null
+        },
+        "prices": [],
+        "exchange_rates": [],
+        "costs_per_ha": {},
+        "source_errors": [],
+        "assumptions": [],
+        "request_hash": "synthetic-request",
+        "input_hash": null,
+        "demo": true
+      },
+      "rules": {
+        "version": "synthetic-quality-v1",
+        "catalog": [
+          {
+            "id": "barley_spring",
+            "name_uk": "Ячмінь ярий",
+            "family": "cereals",
+            "season_type": "spring",
+            "gaez_code": "BRL",
+            "gaez_match": "parent_crop",
+            "establishment_moisture_sensitive": false,
+            "commodity_spec": "barley_feed",
+            "parent_crop": null,
+            "regions": [
+              "UA-53"
+            ],
+            "status": "demo",
+            "source": {
+              "type": "synthetic_test_fixture",
+              "ref": "design §5 і §8 demo; додаткові параметри — синтетичні дані тесту",
+              "url": null,
+              "verified_by": null,
+              "verified_at": null
+            }
+          },
+          {
+            "id": "maize_grain",
+            "name_uk": "Кукурудза на зерно",
+            "family": "cereals",
+            "season_type": "summer",
+            "gaez_code": "MZE",
+            "gaez_match": "exact",
+            "establishment_moisture_sensitive": false,
+            "commodity_spec": "maize_grain",
+            "parent_crop": null,
+            "regions": [
+              "UA-53"
+            ],
+            "status": "demo",
+            "source": {
+              "type": "synthetic_test_fixture",
+              "ref": "design §5 і §8 demo; додаткові параметри — синтетичні дані тесту",
+              "url": null,
+              "verified_by": null,
+              "verified_at": null
+            }
+          },
+          {
+            "id": "pea_dry",
+            "name_uk": "Горох сухий",
+            "family": "legumes",
+            "season_type": "spring",
+            "gaez_code": "PEA",
+            "gaez_match": "exact",
+            "establishment_moisture_sensitive": false,
+            "commodity_spec": "pea_dry",
+            "parent_crop": null,
+            "regions": [
+              "UA-53"
+            ],
+            "status": "demo",
+            "source": {
+              "type": "synthetic_test_fixture",
+              "ref": "design §5 і §8 demo; додаткові параметри — синтетичні дані тесту",
+              "url": null,
+              "verified_by": null,
+              "verified_at": null
+            }
+          },
+          {
+            "id": "sugar_beet",
+            "name_uk": "Буряк цукровий",
+            "family": "amaranthaceae",
+            "season_type": "spring",
+            "gaez_code": "SUB",
+            "gaez_match": "exact",
+            "establishment_moisture_sensitive": false,
+            "commodity_spec": "sugar_beet",
+            "parent_crop": null,
+            "regions": [
+              "UA-53"
+            ],
+            "status": "demo",
+            "source": {
+              "type": "synthetic_test_fixture",
+              "ref": "design §5 і §8 demo; додаткові параметри — синтетичні дані тесту",
+              "url": null,
+              "verified_by": null,
+              "verified_at": null
+            }
+          }
+        ],
+        "sowing_windows": [
+          {
+            "crop_variant": "barley_spring",
+            "region": "UA-53",
+            "earliest": "03-01",
+            "latest": "06-01",
+            "min_lead_days": 0,
+            "prep_days": 7,
+            "status": "demo",
+            "source": {
+              "type": "synthetic_test_fixture",
+              "ref": "design §7.6 dates for wheat/rapeseed; other calendars synthetic",
+              "url": null,
+              "verified_by": null,
+              "verified_at": null
+            }
+          },
+          {
+            "crop_variant": "maize_grain",
+            "region": "UA-53",
+            "earliest": "03-01",
+            "latest": "06-01",
+            "min_lead_days": 0,
+            "prep_days": 7,
+            "status": "demo",
+            "source": {
+              "type": "synthetic_test_fixture",
+              "ref": "design §7.6 dates for wheat/rapeseed; other calendars synthetic",
+              "url": null,
+              "verified_by": null,
+              "verified_at": null
+            }
+          },
+          {
+            "crop_variant": "pea_dry",
+            "region": "UA-53",
+            "earliest": "03-01",
+            "latest": "06-01",
+            "min_lead_days": 0,
+            "prep_days": 7,
+            "status": "demo",
+            "source": {
+              "type": "synthetic_test_fixture",
+              "ref": "design §7.6 dates for wheat/rapeseed; other calendars synthetic",
+              "url": null,
+              "verified_by": null,
+              "verified_at": null
+            }
+          },
+          {
+            "crop_variant": "sugar_beet",
+            "region": "UA-53",
+            "earliest": "03-01",
+            "latest": "06-01",
+            "min_lead_days": 0,
+            "prep_days": 7,
+            "status": "demo",
+            "source": {
+              "type": "synthetic_test_fixture",
+              "ref": "design §7.6 dates for wheat/rapeseed; other calendars synthetic",
+              "url": null,
+              "verified_by": null,
+              "verified_at": null
+            }
+          }
+        ],
+        "rotation": [],
+        "parameters": {
+          "status": "demo",
+          "source": {
+            "type": "synthetic_demo",
+            "ref": "rules-synthetic-demo-0.1.0+8a118cb3fe2e",
+            "url": null,
+            "verified_by": null,
+            "verified_at": null
+          },
+          "floor_agro": 0.4,
+          "effect_multipliers": {
+            "favorable": 1.05,
+            "neutral": 1.0,
+            "discouraged_mild": 0.9,
+            "discouraged_strong": 0.7
+          },
+          "rotation_missing": {
+            "lo": 0.7,
+            "mid": 1.0,
+            "hi": 1.05
+          },
+          "weather_multipliers": {
+            "dry": {
+              "lo": 0.85,
+              "mid": 0.9,
+              "hi": 0.95
+            },
+            "normal": {
+              "lo": 0.97,
+              "mid": 1.0,
+              "hi": 1.03
+            },
+            "wet_ok": {
+              "lo": 1.0,
+              "mid": 1.02,
+              "hi": 1.05
+            }
+          },
+          "weather_missing": {
+            "lo": 0.85,
+            "mid": 1.0,
+            "hi": 1.05
+          },
+          "nowcast_horizon_days": 30,
+          "weather_dry_percentile": null,
+          "weather_wet_percentile": null,
+          "near_tie_epsilon": 0.02,
+          "price_stale_days": 30,
+          "price_max_age_days": 90,
+          "price_scenario_fraction": 0.15,
+          "robustness_cost_fraction": 0.15
+        },
+        "demo": true
+      }
+    }
+  ]
+}

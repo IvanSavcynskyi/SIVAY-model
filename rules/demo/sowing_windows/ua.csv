@@ -1,0 +1,13 @@
+region,crop_variant,earliest,latest,optimal_from,optimal_to,min_prep_days,min_lead_days,version,status,source_type,source_ref,source_url,verified_by,verified_at
+UA-53,wheat_winter,09-15,10-20,09-25,10-10,7,0,1,demo,synthetic_test_fixture,design §7.6 dates for wheat/rapeseed; other calendars synthetic,,,
+UA-53,wheat_spring,03-01,06-01,04-01,05-01,7,0,1,demo,synthetic_test_fixture,design §7.6 dates for wheat/rapeseed; other calendars synthetic,,,
+UA-53,barley_winter,09-15,10-20,09-25,10-10,7,0,1,demo,synthetic_test_fixture,design §7.6 dates for wheat/rapeseed; other calendars synthetic,,,
+UA-53,barley_spring,03-01,06-01,04-01,05-01,7,0,1,demo,synthetic_test_fixture,design §7.6 dates for wheat/rapeseed; other calendars synthetic,,,
+UA-53,rapeseed_winter,08-10,09-05,08-15,08-30,5,0,1,demo,synthetic_test_fixture,design §7.6 dates for wheat/rapeseed; other calendars synthetic,,,
+UA-53,rye_winter,09-15,10-20,09-25,10-10,7,0,1,demo,synthetic_test_fixture,design §7.6 dates for wheat/rapeseed; other calendars synthetic,,,
+UA-53,maize_grain,03-01,06-01,04-01,05-01,7,0,1,demo,synthetic_test_fixture,design §7.6 dates for wheat/rapeseed; other calendars synthetic,,,
+UA-53,sunflower,03-01,06-01,04-01,05-01,7,0,1,demo,synthetic_test_fixture,design §7.6 dates for wheat/rapeseed; other calendars synthetic,,,
+UA-53,soybean,03-01,06-01,04-01,05-01,7,0,1,demo,synthetic_test_fixture,design §7.6 dates for wheat/rapeseed; other calendars synthetic,,,
+UA-53,pea_dry,03-01,06-01,04-01,05-01,7,0,1,demo,synthetic_test_fixture,design §7.6 dates for wheat/rapeseed; other calendars synthetic,,,
+UA-53,sugar_beet,03-01,06-01,04-01,05-01,7,0,1,demo,synthetic_test_fixture,design §7.6 dates for wheat/rapeseed; other calendars synthetic,,,
+UA-53,oat,03-01,06-01,04-01,05-01,7,0,1,demo,synthetic_test_fixture,design §7.6 dates for wheat/rapeseed; other calendars synthetic,,,

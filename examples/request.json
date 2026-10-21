@@ -1,0 +1,14 @@
+{
+  "field": {
+    "field_id": "poltava_example",
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [[[34.501,49.612],[34.523,49.612],[34.523,49.598],[34.501,49.598],[34.501,49.612]]]
+    },
+    "crs": "EPSG:4326"
+  },
+  "as_of_date": "2026-10-21",
+  "target_season": {"harvest_year": 2027, "include": ["spring"]},
+  "management": {"input_level": "high", "irrigation": "none"},
+  "options": {"max_results": 5, "language": "uk"}
+}

@@ -1,0 +1,13 @@
+region,crop_variant,earliest,latest,optimal_from,optimal_to,min_prep_days,min_lead_days,version,status,source_type,source_ref,source_url,verified_by,verified_at
+UA,wheat_winter,,,,,,,1,draft,pending_agronomist_review,,,,
+UA,wheat_spring,,,,,,,1,draft,pending_agronomist_review,,,,
+UA,barley_winter,,,,,,,1,draft,pending_agronomist_review,,,,
+UA,barley_spring,,,,,,,1,draft,pending_agronomist_review,,,,
+UA,rapeseed_winter,,,,,,,1,draft,pending_agronomist_review,,,,
+UA,rye_winter,,,,,,,1,draft,pending_agronomist_review,,,,
+UA,maize_grain,,,,,,,1,draft,pending_agronomist_review,,,,
+UA,sunflower,,,,,,,1,draft,pending_agronomist_review,,,,
+UA,soybean,,,,,,,1,draft,pending_agronomist_review,,,,
+UA,pea_dry,,,,,,,1,draft,pending_agronomist_review,,,,
+UA,sugar_beet,,,,,,,1,draft,pending_agronomist_review,,,,
+UA,oat,,,,,,,1,draft,pending_agronomist_review,,,,

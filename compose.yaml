@@ -1,0 +1,37 @@
+services:
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: sivay
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}
+      POSTGRES_DB: sivay
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U sivay -d sivay"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+  api:
+    build: .
+    ports: ["127.0.0.1:8000:8000"]
+    environment: &sivay_env
+      SIVAY_DATABASE_URL: postgresql+psycopg://sivay:${POSTGRES_PASSWORD}@postgres:5432/sivay
+      SIVAY_DEMO: ${SIVAY_DEMO:-false}
+      SIVAY_RULES_PATH: ${SIVAY_RULES_PATH:-rules}
+    volumes:
+      - ./data:/srv/sivay/data
+    depends_on:
+      postgres:
+        condition: service_healthy
+  worker:
+    build: .
+    command: ["python", "-m", "app.worker"]
+    environment: *sivay_env
+    volumes:
+      - ./data:/srv/sivay/data
+    depends_on:
+      postgres:
+        condition: service_healthy
+volumes:
+  postgres_data:

@@ -1,0 +1,29 @@
+name: checks
+on: [push, pull_request]
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: sivay
+          POSTGRES_PASSWORD: sivay_test
+          POSTGRES_DB: sivay_test
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U sivay -d sivay_test"
+          --health-interval 5s --health-timeout 5s --health-retries 10
+    env:
+      SIVAY_TEST_POSTGRES_URL: postgresql+psycopg://sivay:sivay_test@localhost:5432/sivay_test
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - run: pip install -r requirements.lock
+      - run: pip install -e . --no-deps
+      - run: ruff check app tests scripts
+      - run: python -m app.rules rules
+      - run: pytest

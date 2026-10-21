@@ -1,0 +1,157 @@
+# Числа очікують на джерела, калібрування та підпис агронома.
+- id: rotation.favorable
+  category: rotation
+  status: draft
+  value: null
+  lo: null
+  mid: null
+  hi: null
+  source: {type: pending_agronomist_review, ref: null, url: null, verified_by: null, verified_at: null}
+
+- id: rotation.neutral
+  category: rotation
+  status: draft
+  value: null
+  lo: null
+  mid: null
+  hi: null
+  source: {type: pending_agronomist_review, ref: null, url: null, verified_by: null, verified_at: null}
+
+- id: rotation.discouraged_mild
+  category: rotation
+  status: draft
+  value: null
+  lo: null
+  mid: null
+  hi: null
+  source: {type: pending_agronomist_review, ref: null, url: null, verified_by: null, verified_at: null}
+
+- id: rotation.discouraged_strong
+  category: rotation
+  status: draft
+  value: null
+  lo: null
+  mid: null
+  hi: null
+  source: {type: pending_agronomist_review, ref: null, url: null, verified_by: null, verified_at: null}
+
+- id: weather.dry
+  category: weather
+  status: draft
+  value: null
+  lo: null
+  mid: null
+  hi: null
+  source: {type: pending_agronomist_review, ref: null, url: null, verified_by: null, verified_at: null}
+
+- id: weather.normal
+  category: weather
+  status: draft
+  value: null
+  lo: null
+  mid: null
+  hi: null
+  source: {type: pending_agronomist_review, ref: null, url: null, verified_by: null, verified_at: null}
+
+- id: weather.wet_ok
+  category: weather
+  status: draft
+  value: null
+  lo: null
+  mid: null
+  hi: null
+  source: {type: pending_agronomist_review, ref: null, url: null, verified_by: null, verified_at: null}
+
+- id: weather.missing
+  category: weather
+  status: draft
+  value: null
+  lo: null
+  mid: null
+  hi: null
+  source: {type: pending_agronomist_review, ref: null, url: null, verified_by: null, verified_at: null}
+
+- id: threshold.floor_agro
+  category: threshold
+  status: draft
+  value: null
+  lo: null
+  mid: null
+  hi: null
+  source: {type: pending_agronomist_review, ref: null, url: null, verified_by: null, verified_at: null}
+
+- id: rotation.missing
+  category: rotation
+  status: draft
+  value: null
+  lo: null
+  mid: null
+  hi: null
+  source: {type: pending_agronomist_review, ref: null, url: null, verified_by: null, verified_at: null}
+
+- id: ranking.nowcast_horizon_days
+  category: ranking
+  status: draft
+  value: null
+  lo: null
+  mid: null
+  hi: null
+  source: {type: pending_agronomist_review, ref: null, url: null, verified_by: null, verified_at: null}
+
+- id: ranking.near_tie_epsilon
+  category: ranking
+  status: draft
+  value: null
+  lo: null
+  mid: null
+  hi: null
+  source: {type: pending_agronomist_review, ref: null, url: null, verified_by: null, verified_at: null}
+
+- id: ranking.price_stale_days
+  category: ranking
+  status: draft
+  value: null
+  lo: null
+  mid: null
+  hi: null
+  source: {type: pending_agronomist_review, ref: null, url: null, verified_by: null, verified_at: null}
+
+- id: ranking.price_max_age_days
+  category: ranking
+  status: draft
+  value: null
+  lo: null
+  mid: null
+  hi: null
+  source: {type: pending_agronomist_review, ref: null, url: null, verified_by: null, verified_at: null}
+
+- id: ranking.price_scenario_fraction
+  category: ranking
+  status: draft
+  value: null
+  lo: null
+  mid: null
+  hi: null
+  source: {type: pending_agronomist_review, ref: null, url: null, verified_by: null, verified_at: null}
+
+- id: ranking.robustness_cost_fraction
+  category: ranking
+  status: draft
+  value: null
+  lo: null
+  mid: null
+  hi: null
+  source: {type: pending_agronomist_review, ref: null, url: null, verified_by: null, verified_at: null}
+
+
+- id: ranking.weather_dry_percentile
+  category: ranking
+  status: draft
+  value: null
+  source: {type: pending_agronomist_review, ref: null}
+
+- id: ranking.weather_wet_percentile
+  category: ranking
+  status: draft
+  value: null
+  source: {type: pending_agronomist_review, ref: null}

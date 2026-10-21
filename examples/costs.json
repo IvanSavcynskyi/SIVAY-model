@@ -1,0 +1,8 @@
+{
+  "wheat_spring": {
+    "value": 30000,
+    "drying_per_t": 0,
+    "logistics_per_t": 0,
+    "includes": []
+  }
+}

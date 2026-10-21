@@ -1,0 +1,19 @@
+- id: ROT-RETURN-SUNFLOWER
+  version: 1
+  status: demo
+  regions: [UA-53]
+  applies_to: {candidate: sunflower}
+  condition: {type: return_interval, scope: same_crop, min_years_between: 4}
+  effect: discouraged_strong
+  source: {type: synthetic_test_fixture, ref: "design §5 і §8 demo; додаткові параметри — синтетичні дані тесту", url: null, verified_by: null, verified_at: null}
+  explanation_uk: "Повернення соняшнику раніше рекомендованого інтервалу; інтервал та наслідок потребують перевірки агрономом."
+
+- id: ROT-PRED-SUNFLOWER-FOR-WINTER-CEREALS
+  version: 1
+  status: demo
+  regions: [UA-53]
+  applies_to: {candidate_family: cereals, season_type: winter}
+  condition: {type: predecessor_is, predecessor: sunflower}
+  effect: discouraged_mild
+  source: {type: synthetic_test_fixture, ref: "design §5 і §8 demo; додаткові параметри — синтетичні дані тесту", url: null, verified_by: null, verified_at: null}
+  explanation_uk: "Вплив соняшнику як попередника озимих зернових потребує перевірки агрономом."

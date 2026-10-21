@@ -1,0 +1,144 @@
+# Коди GAEZ: docs/design/crop-recommendation-design.md §5.3. Класифікація потребує перевірки.
+- id: wheat_winter
+  name_uk: "Пшениця озима"
+  status: draft
+  family: cereals
+  season_type: winter
+  supported_regions: [UA]
+  gaez_code: WHE
+  gaez_match: parent_crop
+  establishment_moisture_sensitive: null
+  commodity_spec: null
+  source: {type: pending_agronomist_review, ref: null, url: null, verified_by: null, verified_at: null}
+
+- id: wheat_spring
+  name_uk: "Пшениця яра"
+  status: draft
+  family: cereals
+  season_type: spring
+  supported_regions: [UA]
+  gaez_code: WHE
+  gaez_match: parent_crop
+  establishment_moisture_sensitive: null
+  commodity_spec: null
+  source: {type: pending_agronomist_review, ref: null, url: null, verified_by: null, verified_at: null}
+
+- id: barley_winter
+  name_uk: "Ячмінь озимий"
+  status: draft
+  family: cereals
+  season_type: winter
+  supported_regions: [UA]
+  gaez_code: BRL
+  gaez_match: parent_crop
+  establishment_moisture_sensitive: null
+  commodity_spec: null
+  source: {type: pending_agronomist_review, ref: null, url: null, verified_by: null, verified_at: null}
+
+- id: barley_spring
+  name_uk: "Ячмінь ярий"
+  status: draft
+  family: cereals
+  season_type: spring
+  supported_regions: [UA]
+  gaez_code: BRL
+  gaez_match: parent_crop
+  establishment_moisture_sensitive: null
+  commodity_spec: null
+  source: {type: pending_agronomist_review, ref: null, url: null, verified_by: null, verified_at: null}
+
+- id: rapeseed_winter
+  name_uk: "Ріпак озимий"
+  status: draft
+  family: brassicaceae
+  season_type: winter
+  supported_regions: [UA]
+  gaez_code: RSD
+  gaez_match: parent_crop
+  establishment_moisture_sensitive: null
+  commodity_spec: null
+  source: {type: pending_agronomist_review, ref: null, url: null, verified_by: null, verified_at: null}
+
+- id: rye_winter
+  name_uk: "Жито озиме"
+  status: draft
+  family: cereals
+  season_type: winter
+  supported_regions: [UA]
+  gaez_code: RYE
+  gaez_match: parent_crop
+  establishment_moisture_sensitive: null
+  commodity_spec: null
+  source: {type: pending_agronomist_review, ref: null, url: null, verified_by: null, verified_at: null}
+
+- id: maize_grain
+  name_uk: "Кукурудза на зерно"
+  status: draft
+  family: cereals
+  season_type: summer
+  supported_regions: [UA]
+  gaez_code: MZE
+  gaez_match: exact
+  establishment_moisture_sensitive: null
+  commodity_spec: null
+  source: {type: pending_agronomist_review, ref: null, url: null, verified_by: null, verified_at: null}
+
+- id: sunflower
+  name_uk: "Соняшник"
+  status: draft
+  family: asteraceae
+  season_type: summer
+  supported_regions: [UA]
+  gaez_code: SFL
+  gaez_match: exact
+  establishment_moisture_sensitive: null
+  commodity_spec: null
+  source: {type: pending_agronomist_review, ref: null, url: null, verified_by: null, verified_at: null}
+
+- id: soybean
+  name_uk: "Соя"
+  status: draft
+  family: legumes
+  season_type: summer
+  supported_regions: [UA]
+  gaez_code: SOY
+  gaez_match: exact
+  establishment_moisture_sensitive: null
+  commodity_spec: null
+  source: {type: pending_agronomist_review, ref: null, url: null, verified_by: null, verified_at: null}
+
+- id: pea_dry
+  name_uk: "Горох сухий"
+  status: draft
+  family: legumes
+  season_type: spring
+  supported_regions: [UA]
+  gaez_code: PEA
+  gaez_match: exact
+  establishment_moisture_sensitive: null
+  commodity_spec: null
+  source: {type: pending_agronomist_review, ref: null, url: null, verified_by: null, verified_at: null}
+
+- id: sugar_beet
+  name_uk: "Буряк цукровий"
+  status: draft
+  family: amaranthaceae
+  season_type: spring
+  supported_regions: [UA]
+  gaez_code: SUB
+  gaez_match: exact
+  establishment_moisture_sensitive: null
+  commodity_spec: null
+  source: {type: pending_agronomist_review, ref: null, url: null, verified_by: null, verified_at: null}
+
+- id: oat
+  name_uk: "Овес"
+  status: draft
+  family: cereals
+  season_type: spring
+  supported_regions: [UA]
+  gaez_code: OAT
+  gaez_match: exact
+  establishment_moisture_sensitive: null
+  commodity_spec: null
+  source: {type: pending_agronomist_review, ref: null, url: null, verified_by: null, verified_at: null}
