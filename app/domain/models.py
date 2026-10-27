@@ -175,6 +175,7 @@ class RecommendationRequest(Model):
     constraints: Constraints = Field(default_factory=Constraints)
     economics: EconomicsInput | None = None
     options: Options = Field(default_factory=Options)
+    personalization: FieldPersonalizationInput | None = None
 
 
 class RuleSource(Model):
@@ -380,6 +381,145 @@ class WeatherFeatures(Model):
     issues: list[str] = Field(default_factory=list)
 
 
+class FieldWeatherInput(Model):
+    """Daily point export, in Celsius, mm/day and volumetric m³/m³."""
+    latitude: float = Field(ge=-90, le=90)
+    longitude: float = Field(ge=-180, le=180)
+    resolution_m: float | None = Field(default=None, gt=0)
+    max_distance_km: float = Field(default=25, gt=0, le=100)
+    records: list[WeatherRecord] = Field(max_length=20000)
+
+    @model_validator(mode="after")
+    def physical_values(self):
+        for record in self.records:
+            values = record.values
+            if any(value is not None and value < 0 for name, value in values.items()
+                   if name in {"precip", "et0", "snow_depth"}):
+                raise ValueError("Precipitation, ET0 and snow depth must be nonnegative")
+            if any(value is not None and not 0 <= value <= 1 for name, value in values.items()
+                   if name.startswith("soil_moisture")):
+                raise ValueError("Soil moisture must be volumetric m3/m3 in 0..1")
+            for name in ("tmin", "tmax"):
+                if values.get(name) is not None and not -100 <= values[name] <= 70:
+                    raise ValueError("Temperatures must use degrees Celsius")
+            if (values.get("tmin") is not None and values.get("tmax") is not None
+                    and values["tmin"] > values["tmax"]):
+                raise ValueError("Daily minimum temperature exceeds maximum")
+        return self
+
+
+class FieldImageInput(Model):
+    """Georeferenced GeoTIFF with explicit band identities and radiometric scale."""
+    image_id: str = Field(min_length=1, max_length=128)
+    data_base64: str = Field(min_length=1, max_length=14000000)
+    acquired_at: AwareDatetime
+    available_at: AwareDatetime
+    sensor: str = Field(min_length=1)
+    processing_version: str = Field(min_length=1)
+    bands: dict[Literal["red", "nir", "swir", "NDVI", "NDMI", "quality"], int]
+    scale: float = Field(gt=0)
+    offset: float = 0
+    clear_values: list[int] = Field(default_factory=list)
+
+    @model_validator(mode="after")
+    def consistent_image(self):
+        if self.acquired_at > self.available_at:
+            raise ValueError("Image availability precedes acquisition")
+        if not self.bands or any(v < 1 for v in self.bands.values()):
+            raise ValueError("Image band numbers are one-based")
+        if len(set(self.bands.values())) != len(self.bands):
+            raise ValueError("Image band identities must be distinct")
+        if "quality" not in self.bands or not self.clear_values:
+            raise ValueError("A quality-mask band and clear_values are required")
+        if not ({"NDVI", "NDMI"} & self.bands.keys() or
+                ("nir" in self.bands and {"red", "swir"} & self.bands.keys())):
+            raise ValueError("Provide index bands or NIR with red/SWIR; RGB alone has no spectral index")
+        return self
+
+
+class PersonalizationRule(Model):
+    id: str = Field(min_length=1)
+    crops: list[str] = Field(min_length=1)
+    metric: Literal["NDVI.mean", "NDMI.mean", "NDVI.delta", "NDMI.delta",
+                    "weather.precip_7d", "weather.precip_30d", "weather.balance_30d",
+                    "weather.soil_moisture", "weather.tmin_7d", "weather.tmax_7d",
+                    "forecast.tmin_7d", "forecast.tmax_7d", "forecast.precip_7d"]
+    operator: Literal["lt", "gt"]
+    threshold: float
+    priority: Literal[1, 2, 3] = 1
+    horizon_days: int = Field(default=14, ge=0, le=30)
+    explanation_uk: str = Field(min_length=1)
+    source: str = Field(min_length=1)
+
+
+class PersonalizationPolicy(Model):
+    version: str = Field(min_length=1)
+    source: str = Field(min_length=1)
+    # A farm policy, explicitly separate from the approved agronomy rule bundle.
+    status: Literal["experimental", "farm_configured"] = "farm_configured"
+    avoid_same_crop_predecessor: bool = True
+    min_return_years: dict[str, int] = Field(default_factory=dict)
+    avoid_predecessors: dict[str, list[str]] = Field(default_factory=dict)
+    rules: list[PersonalizationRule] = Field(default_factory=list, max_length=100)
+    min_valid_fraction: float = Field(default=.8, gt=0, le=1)
+    max_index_age_days: int = Field(default=30, ge=1, le=90)
+    max_weather_age_days: int = Field(default=3, ge=0, le=7)
+
+    @model_validator(mode="after")
+    def consistent_policy(self):
+        if any(not 1 <= years <= 30 for years in self.min_return_years.values()):
+            raise ValueError("Return intervals must be 1..30 years")
+        if len({rule.id for rule in self.rules}) != len(self.rules):
+            raise ValueError("Duplicate personalization rule id")
+        return self
+
+
+class FieldPersonalizationInput(Model):
+    indices: list[SatelliteSeries] = Field(default_factory=list, max_length=2)
+    weather: FieldWeatherInput | None = None
+    policy: PersonalizationPolicy | None = None
+    sowing_dates: dict[str, date] = Field(default_factory=dict)
+
+    @model_validator(mode="after")
+    def unique_indices(self):
+        if len({series.index for series in self.indices}) != len(self.indices):
+            raise ValueError("Only one series per index may be supplied")
+        return self
+
+
+class FieldSignals(Model):
+    metrics: dict[str, float] = Field(default_factory=dict)
+    metric_dates: dict[str, date] = Field(default_factory=dict)
+    metric_sources: dict[str, list[str]] = Field(default_factory=dict)
+    indices: dict[str, dict[str, Any]] = Field(default_factory=dict)
+    images: list[dict[str, Any]] = Field(default_factory=list)
+    weather: dict[str, Any] = Field(default_factory=dict)
+    issues: list[str] = Field(default_factory=list)
+    policy: PersonalizationPolicy | None = None
+    source_availability: dict[str, AwareDatetime] = Field(default_factory=dict)
+
+
+class PersonalizationAssessment(Model):
+    rule_id: str
+    source: str
+    outcome: Literal["risk", "pass", "unknown", "not_applicable"]
+    priority: int = Field(default=0, ge=0, le=3)
+    explanation_uk: str
+    facts: dict[str, Any] = Field(default_factory=dict)
+
+
+class PersonalizationResult(Model):
+    policy_version: str
+    policy_status: Literal["experimental", "farm_configured"]
+    risk_priority: int = Field(ge=0, le=3)
+    assessments: list[PersonalizationAssessment]
+    metrics: dict[str, float] = Field(default_factory=dict)
+    sources: dict[str, list[str]] = Field(default_factory=dict)
+    evidence: dict[str, Any] = Field(default_factory=dict)
+    # GAEZ remains a suitability index; risks change order, never fabricate yield.
+    ranking_method: Literal["risk_priority_then_gaez"] = "risk_priority_then_gaez"
+
+
 class MarketPrice(Model):
     price_id: str
     crop: str
@@ -455,6 +595,7 @@ class FieldFeatureSnapshot(Model):
     history: NormalizedHistory = Field(default_factory=NormalizedHistory)
     weather: WeatherFeatures = Field(default_factory=WeatherFeatures)
     satellite: SatelliteFeatures = Field(default_factory=SatelliteFeatures)
+    field_signals: FieldSignals = Field(default_factory=FieldSignals)
     prices: list[MarketPrice] = Field(default_factory=list)
     exchange_rates: list[ExchangeRate] = Field(default_factory=list)
     costs_per_ha: dict[str, CropCost] = Field(default_factory=dict)
@@ -571,6 +712,7 @@ class RankedCrop(Model):
     reasons: list[Explanation] = Field(default_factory=list)
     limitations: list[Explanation] = Field(default_factory=list)
     near_tie_with: list[str] = Field(default_factory=list)
+    personalization: PersonalizationResult | None = None
 
 
 class ExcludedCrop(Model):
@@ -640,3 +782,4 @@ class JobResult(Model):
 
 
 WeatherFeatures.model_rebuild()
+RecommendationRequest.model_rebuild()

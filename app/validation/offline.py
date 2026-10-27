@@ -19,7 +19,7 @@ from app.domain.models import (
     RecommendationResult, RuleSet, SatelliteFeatures, as_of_cutoff,
 )
 
-Profile = Literal["gaez_baseline", "validated"]
+Profile = Literal["gaez_baseline", "personalized", "validated"]
 Ranker = Callable[[RecommendationRequest, FieldFeatureSnapshot, RuleSet], RecommendationResult]
 
 
@@ -31,6 +31,9 @@ class ValidationCase(Model):
 
 
 def _ranker(profile: Profile) -> Ranker:
+    if profile == "personalized":
+        from app.ranking.personalized import recommend_personalized
+        return recommend_personalized
     if profile == "validated":
         from app.ranking.engine import recommend
         return recommend
@@ -66,6 +69,14 @@ def audit_cutoff(case: ValidationCase) -> list[str]:
     for row in snap.weather.provenance:
         if row.get("forecast_records_available", 0):
             issues.append("FORECAST_ARCHIVE_AUDIT_REQUIRED")
+    for source, timestamp in snap.field_signals.source_availability.items():
+        if timestamp > cutoff:
+            issues.append(f"FIELD_SOURCE_UNAVAILABLE:{source}")
+    for metric, day in snap.field_signals.metric_dates.items():
+        if day > req.as_of_date:
+            issues.append(f"FIELD_METRIC_FROM_FUTURE:{metric}")
+    if snap.field_signals.weather.get("forecast_issued_at"):
+        issues.append("FORECAST_ARCHIVE_AUDIT_REQUIRED")
     for row in snap.prices:
         if (row.published_at > cutoff or (row.available_at or row.published_at) > cutoff
                 or row.price_date > req.as_of_date):
@@ -136,7 +147,20 @@ def _intervention(case: ValidationCase, level: int) -> ValidationCase:
         changed.snapshot.costs_per_ha = {}
     if level < 2:
         changed.snapshot.satellite = SatelliteFeatures()
+        signals = changed.snapshot.field_signals
+        signals.images, signals.indices = [], {}
+        for name in list(signals.metrics):
+            if name.startswith(("NDVI.", "NDMI.")):
+                signals.metrics.pop(name)
+                signals.metric_dates.pop(name, None)
+                signals.metric_sources.pop(name, None)
     if level == 0:
+        signals = changed.snapshot.field_signals
+        for name in list(signals.metrics):
+            if name.startswith(("weather.", "forecast.")):
+                signals.metrics.pop(name)
+                signals.metric_dates.pop(name, None)
+                signals.metric_sources.pop(name, None)
         one = Interval(lo=1, mid=1, hi=1)
         changed.rules.parameters.weather_missing = one
         changed.rules.parameters.weather_multipliers = {

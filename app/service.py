@@ -39,6 +39,9 @@ class RecommendationService:
         return enrich_result(self._rank(request, snapshot))
 
     def _rank(self, request, snapshot):
+        if self.profile == "personalized":
+            from app.ranking.personalized import recommend_personalized
+            return recommend_personalized(request, snapshot, self.rules)
         if self.profile == "gaez_baseline":
             from app.ranking.baseline import recommend_baseline
             return recommend_baseline(request, snapshot, self.rules)

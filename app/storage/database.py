@@ -141,6 +141,19 @@ class Storage:
                                                SourceDocumentRow.id.desc()).limit(1)).first()
             return row.payload if row else None
 
+    def get_sources(self, prefix: str, field_id: str, as_of: datetime) -> list[dict]:
+        """Latest visible version of each named source (e.g. one per image id)."""
+        with Session(self.engine) as session:
+            query = select(SourceDocumentRow).where(
+                SourceDocumentRow.kind.startswith(prefix, autoescape=True),
+                SourceDocumentRow.field_id == field_id,
+                SourceDocumentRow.available_at <= as_of).order_by(
+                    SourceDocumentRow.available_at.desc(), SourceDocumentRow.id.desc())
+            latest = {}
+            for row in session.scalars(query):
+                latest.setdefault(row.kind, row.payload)
+            return [latest[kind] for kind in sorted(latest)]
+
     def create_job(self, request: RecommendationRequest) -> JobResult:
         now = utcnow()
         row = JobRow(id="job_" + uuid4().hex, status="queued", request=request.model_dump(mode="json", by_alias=True, exclude_unset=True),

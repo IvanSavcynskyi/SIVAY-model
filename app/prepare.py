@@ -55,23 +55,27 @@ class Preparer:
         self.storage = storage
         self.gaez = GaezStore(settings.gaez_root, settings.gaez_manifest)
 
-    def request_hash(self, request: RecommendationRequest) -> str:
+    def request_hash(self, request: RecommendationRequest, imported=None) -> str:
         # Every local source version and input explicitness participates in invalidation.
         paths = [self.settings.regions_path, self.settings.prices_path,
                  self.settings.exchange_rates_path, self.settings.weather_path,
-                 self.settings.satellite_path, self.gaez.manifest_path]
+                 self.settings.satellite_path, self.gaez.manifest_path,
+                 self.settings.personalization_policy_path]
         sources = {str(p): digest(p.read_text()) if p.exists() else None for p in paths if p}
-        imported = self._sources(request)
+        if imported is None:
+            imported = self._sources(request)
         return digest({"request": request.model_dump(mode="json", by_alias=True, exclude_unset=True),
                        "rules": self.rules.version, "sources": sources, "imported": imported,
-                       "demo": self.settings.demo})
+                       "demo": self.settings.demo, "prepare_version": "field-signals-1.0.0"})
 
     def _sources(self, request: RecommendationRequest):
         if self.storage is None:
             return {}
         cutoff = as_of_cutoff(request.as_of_date)
         sources = {kind: self.storage.get_source(kind, request.field.field_id, cutoff)
-                   for kind in ("history", "costs", "satellite:NDVI")}
+                   for kind in ("history", "costs", "satellite:NDVI", "satellite:NDMI",
+                                "weather", "personalization")}
+        sources["images"] = self.storage.get_sources("image:", request.field.field_id, cutoff)
         sources["prices"] = self.storage.get_source("prices", "*", cutoff)
         return sources
 
@@ -172,11 +176,14 @@ class Preparer:
             except (OSError, ValueError, KeyError) as exc:
                 errors.append(SourceError(source="satellite", code="IMPORT_ERROR", message=str(exc)))
         now = datetime.now(timezone.utc)
+        from app.personalize import prepare_signals
+        signals = prepare_signals(request, geom, imported, self.settings, errors)
         snap = FieldFeatureSnapshot(snapshot_id="pending", field_id=request.field.field_id,
             geom_hash=geom.geom_hash, as_of_date=request.as_of_date, prepared_at=now, region=region,
-            gaez=gaez, history=history, weather=weather, satellite=satellite, prices=prices,
+            gaez=gaez, history=history, weather=weather, satellite=satellite,
+            field_signals=signals, prices=prices,
             exchange_rates=rates, costs_per_ha=costs, source_errors=errors, assumptions=assumptions,
-            request_hash=self.request_hash(request),
+            request_hash=self.request_hash(request, imported),
             input_hash=digest(request.model_dump(mode="json", by_alias=True, exclude_unset=True)),
             demo=self.settings.demo)
         snap.snapshot_id = "snap_" + digest(snap.model_dump(mode="json", exclude={"snapshot_id"}))[:32]

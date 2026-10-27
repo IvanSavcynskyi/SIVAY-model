@@ -1,0 +1,35 @@
+{
+  "sowing_dates": {"wheat_winter": "2026-10-30", "rapeseed_winter": "2026-10-30"},
+  "policy": {
+    "version": "EXAMPLE-ONLY-replace-with-farm-policy",
+    "source": "Synthetic API example; thresholds and dates are not agronomic recommendations",
+    "status": "experimental",
+    "avoid_same_crop_predecessor": true,
+    "min_return_years": {"sunflower": 4},
+    "avoid_predecessors": {"wheat_winter": ["sunflower"]},
+    "rules": [
+      {
+        "id": "example-ndmi",
+        "crops": ["wheat_winter", "rapeseed_winter"],
+        "metric": "NDMI.mean",
+        "operator": "lt",
+        "threshold": 0.1,
+        "priority": 2,
+        "horizon_days": 14,
+        "source": "Synthetic example threshold; replace with farm requirement",
+        "explanation_uk": "NDMI нижче заданого господарством порогу; перевірте стан рослинності."
+      },
+      {
+        "id": "example-frost",
+        "crops": ["rapeseed_winter"],
+        "metric": "forecast.tmin_7d",
+        "operator": "lt",
+        "threshold": 0,
+        "priority": 3,
+        "horizon_days": 7,
+        "source": "Synthetic example threshold; replace with farm requirement",
+        "explanation_uk": "Прогнозний мінімум температури нижче заданого порогу."
+      }
+    ]
+  }
+}

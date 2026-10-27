@@ -40,8 +40,9 @@ def enrich_result(result: RecommendationResult) -> RecommendationResult:
         return identifier
 
     for crop in enriched.results:
-        score = next((item for item in enriched.trace if item.code in {"AGRO_SCORE", "BASELINE_GAEZ"} and
-                      item.crop == crop.crop_variant), None)
+        score = next((item for item in enriched.trace if item.code == "PERSONALIZATION" and
+                      item.crop == crop.crop_variant), None) or next((item for item in enriched.trace
+                      if item.code in {"AGRO_SCORE", "BASELINE_GAEZ"} and item.crop == crop.crop_variant), None)
         # A trace without the expected facts cannot justify a new score claim.
         if score is None:
             continue
@@ -54,6 +55,19 @@ def enrich_result(result: RecommendationResult) -> RecommendationResult:
             limitations.append(Explanation(text=text, trace_event_id=identifier))
 
         facts = score.params
+        if score.code == "PERSONALIZATION":
+            reason(f"Персоналізований порядок за ризиками поля; пріоритет ризику {facts['risk_priority']} (0 — нижчий, 3 — вищий).")
+            for assessment in facts["assessments"]:
+                text = assessment["explanation_uk"]
+                if assessment["outcome"] in {"unknown", "not_applicable"}:
+                    limitation(text)
+                else:
+                    reason(text)
+            limitation("Правила персоналізації не пройшли польового калібрування; пріоритет ризику не є прогнозом втрат урожаю.")
+            if facts["policy_status"] == "experimental":
+                limitation("Використано експериментальну політику; регіональні правила господарства потребують уточнення.")
+            for issue in facts.get("evidence", {}).get("issues", []):
+                limitation(f"Обмеження персональних даних: {issue}.")
         if score.code == "AGRO_SCORE" and all(key in facts for key in ("a", "rotation", "weather", "agro")):
             reason(f"Придатність GAEZ: {_interval(facts['a'])}; після врахування сівозміни та умов посіву агрооцінка: {_interval(facts['agro'])}.")
             rules = facts["rotation"].get("rules_fired", [])
@@ -69,6 +83,8 @@ def enrich_result(result: RecommendationResult) -> RecommendationResult:
 
         gaez = crop.gaez
         grid_event = event("GAEZ_RESOLUTION", crop.crop_variant, gaez.model_dump(), [gaez.layer])
+        if score.code == "PERSONALIZATION":
+            reason(f"Базова придатність GAEZ: {_interval(gaez.suitability_index.model_dump())}; персональні ризики змінюють порядок, а не цей індекс.", grid_event)
         if score.code == "BASELINE_GAEZ":
             reason(f"Базова придатність за GAEZ: {_interval(gaez.suitability_index.model_dump())}.", grid_event)
             limitation("Базове порівняння за GAEZ потребує окремої перевірки сівозміни та строків посіву перед прийняттям рішення.")

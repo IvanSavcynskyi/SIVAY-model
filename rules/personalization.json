@@ -1,0 +1,11 @@
+{
+  "version": "field-policy-1.0.0",
+  "status": "experimental",
+  "source": "SIVAY research policy; not regionally calibrated. Sunflower return interval: University of Minnesota, Risk Management Guide for Organic Producers, Alternative Crops, https://organicriskmanagement.umn.edu/sites/organicriskmanagement.umn.edu/files/2021-02/alternative_crops.pdf",
+  "avoid_same_crop_predecessor": true,
+  "min_return_years": {"sunflower": 4},
+  "rules": [],
+  "min_valid_fraction": 0.8,
+  "max_index_age_days": 30,
+  "max_weather_age_days": 3
+}

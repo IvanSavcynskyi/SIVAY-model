@@ -20,7 +20,8 @@ class Settings(BaseSettings):
     weather_path: Path | None = None
     weather_enabled: bool = False
     demo: bool = False
-    ranking_profile: Literal["gaez_baseline", "validated"] = "gaez_baseline"
+    ranking_profile: Literal["gaez_baseline", "personalized", "validated"] = "personalized"
+    personalization_policy_path: Path = Path("rules/personalization.json")
     cors_origins: list[str] = Field(default_factory=list)
     job_max_attempts: int = 3
     job_lease_seconds: int = 300

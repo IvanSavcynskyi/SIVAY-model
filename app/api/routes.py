@@ -8,7 +8,8 @@ from sqlalchemy.exc import SQLAlchemyError
 
 from app.adapters.simple_prices import SimplePriceImport, parse_simple_prices
 from app.domain import (CropCost, CropHistoryRecord, JobResult, RecommendationRequest,
-                        RecommendationResult, SatelliteSeries)
+                        RecommendationResult, SatelliteSeries, FieldImageInput,
+                        FieldPersonalizationInput, FieldWeatherInput)
 from app.geo import GeometryError
 from app.prepare import validate_field
 
@@ -27,6 +28,17 @@ def _validate(payload):
         raise HTTPException(status_code=422, detail={"code": "INVALID_FIELD", "message": str(exc)}) from exc
 
 
+def _validate_personalization(payload, request):
+    if payload is None:
+        return
+    from app.personalize import validate_personalization
+    try:
+        validate_personalization(payload, _service(request).rules)
+    except ValueError as exc:
+        raise HTTPException(status_code=422, detail={"code": "INVALID_PERSONALIZATION",
+                                                    "message": str(exc)}) from exc
+
+
 def _unavailable(exc):
     logger.error("Service operation failed", exc_info=exc)
     return HTTPException(status_code=503, detail={"code": "SERVICE_UNAVAILABLE",
@@ -41,6 +53,7 @@ def recommend(payload: RecommendationRequest, request: Request,
     Pass snapshot_id to replay an immutable snapshot without collecting sources.
     """
     _validate(payload)
+    _validate_personalization(payload.personalization, request)
     service = _service(request)
     try:
         return service.replay(payload, snapshot_id) if snapshot_id else service.recommend(payload)
@@ -73,6 +86,7 @@ def prepare(field_id: str, payload: RecommendationRequest, request: Request, res
         raise HTTPException(status_code=422, detail={"code": "FIELD_ID_MISMATCH",
                             "message": "Ідентифікатор поля в URL і тілі запиту має збігатися."})
     _validate(payload)
+    _validate_personalization(payload.personalization, request)
     try:
         job = _service(request).storage.create_job(payload)
     except SQLAlchemyError as exc:
@@ -138,6 +152,8 @@ def health(request: Request, response: Response):
                  (service.preparer.gaez.root / layer.path).is_file()
                  for layer in service.preparer.gaez.layers.values()):
         issues.append("NO_AVAILABLE_LOCAL_GAEZ_LAYERS")
+    if service.profile == "personalized" and not configured.personalization_policy_path.is_file():
+        issues.append("PERSONALIZATION_POLICY_UNAVAILABLE")
     validated_ready = database == "ok" and not issues and not validated_issues
     if service.profile == "validated":
         issues += validated_issues
@@ -190,6 +206,53 @@ def put_history(field_id: str, payload: list[CropHistoryRecord], request: Reques
 @router.get("/fields/{field_id}/history")
 def get_history(field_id: str, request: Request):
     return _get_source(request, "history", field_id)
+
+
+@router.put("/fields/{field_id}/personalization")
+def put_personalization(field_id: str, payload: FieldPersonalizationInput, request: Request):
+    """Farm-specific thresholds and sowing dates, optionally with computed indices/weather."""
+    _validate_personalization(payload, request)
+    return _put_source(request, "personalization", field_id, payload.model_dump(mode="json", exclude_unset=True))
+
+
+@router.get("/fields/{field_id}/personalization")
+def get_personalization(field_id: str, request: Request):
+    return _get_source(request, "personalization", field_id)
+
+
+@router.put("/fields/{field_id}/weather")
+def put_weather(field_id: str, payload: FieldWeatherInput, request: Request):
+    """Import timestamped daily station/model data for this field."""
+    return _put_source(request, "weather", field_id, payload.model_dump(mode="json"))
+
+
+@router.get("/fields/{field_id}/weather")
+def get_weather(field_id: str, request: Request):
+    return _get_source(request, "weather", field_id)
+
+
+@router.post("/fields/{field_id}/images", status_code=201)
+def put_image(field_id: str, payload: FieldImageInput, request: Request):
+    from app.features.imagery import validate_image
+    try:
+        checksum = validate_image(payload)
+    except (OSError, ValueError) as exc:
+        raise HTTPException(status_code=422, detail={"code": "INVALID_FIELD_IMAGE", "message": str(exc)}) from exc
+    if payload.available_at > datetime.now(timezone.utc):
+        raise HTTPException(status_code=422, detail={"code": "FUTURE_IMAGE_AVAILABILITY"})
+    stored = _put_source(request, "image:" + payload.image_id, field_id, payload.model_dump(mode="json"))
+    return {"field_id": field_id, "image_id": payload.image_id, "sha256": checksum,
+            "available_at": stored["available_at"]}
+
+
+@router.get("/fields/{field_id}/images")
+def get_images(field_id: str, request: Request):
+    try:
+        docs = _service(request).storage.get_sources("image:", field_id, datetime.now(timezone.utc))
+    except SQLAlchemyError as exc:
+        raise _unavailable(exc) from exc
+    return {"field_id": field_id, "images": [{"ingested_at": doc["available_at"],
+        **{key: value for key, value in doc["data"].items() if key != "data_base64"}} for doc in docs]}
 
 
 @router.post("/fields/{field_id}/indices", status_code=201)

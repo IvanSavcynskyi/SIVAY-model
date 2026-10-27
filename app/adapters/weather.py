@@ -8,9 +8,9 @@ from pathlib import Path
 from typing import Callable, Literal, Protocol
 
 import httpx
-from pydantic import BaseModel, ConfigDict, Field
+from pyproj import Geod
 
-from app.domain import WeatherRecord, as_of_cutoff
+from app.domain import FieldWeatherInput, WeatherRecord, as_of_cutoff
 
 WeatherKind = Literal["reanalysis", "forecast", "observation", "climatology"]
 Period = tuple[date, date]
@@ -52,11 +52,8 @@ class WeatherProvider(Protocol):
             period: Period, as_of: date | datetime) -> list[WeatherRecord]: ...
 
 
-class WeatherFile(BaseModel):
-    model_config = ConfigDict(extra="forbid", allow_inf_nan=False)
-    latitude: float = Field(ge=-90, le=90)
-    longitude: float = Field(ge=-180, le=180)
-    records: list[WeatherRecord]
+class WeatherFile(FieldWeatherInput):
+    """Same point export contract as field-level weather ingestion."""
 
 
 class FileWeatherProvider:
@@ -65,8 +62,9 @@ class FileWeatherProvider:
         self.data = WeatherFile.model_validate(json.loads(Path(path).read_text(encoding="utf-8")))
 
     def records_for(self, lat: float, lon: float, as_of: date | datetime) -> list[WeatherRecord]:
-        if abs(lat - self.data.latitude) > 1e-6 or abs(lon - self.data.longitude) > 1e-6:
-            raise ValueError("WEATHER_LOCATION_MISMATCH: file coordinates differ from field point")
+        _, _, distance = Geod(ellps="WGS84").inv(lon, lat, self.data.longitude, self.data.latitude)
+        if distance > self.data.max_distance_km * 1000:
+            raise ValueError("WEATHER_LOCATION_MISMATCH: source is too far from field point")
         return available_records(self.data.records, as_of)
 
     def get(self, kind: WeatherKind, lat: float, lon: float, vars: list[str],

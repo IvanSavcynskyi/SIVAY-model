@@ -12,7 +12,7 @@ def main() -> None:
     parser = argparse.ArgumentParser(description="Offline snapshot validation; no expert results inferred")
     parser.add_argument("command", choices=("backtest", "ablation", "blind"))
     parser.add_argument("cases", type=Path, help="JSON object with a cases array")
-    parser.add_argument("--profile", choices=("gaez_baseline", "validated"), default="gaez_baseline")
+    parser.add_argument("--profile", choices=("gaez_baseline", "personalized", "validated"), default="gaez_baseline")
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--key-output", type=Path, help="Separate private assignment key for blind review")
     parser.add_argument("--seed", default="sivay-review-v1")
