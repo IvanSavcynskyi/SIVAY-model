@@ -41,6 +41,19 @@ def prepare_signals(request, geometry, imported, settings, errors):
     signals_context = choose("sowing_dates") or {}
     signals.weather["sowing_dates"] = {k: v.isoformat() for k, v in signals_context.items()}
     entries = {}
+    automatic_series = []
+    for kind in ("weather", "indices"):
+        doc = imported.get("auto:"+kind)
+        if doc and doc["data"].get("geom_hash") == geometry.geom_hash:
+            data = doc["data"]
+            if data.get("error") or data.get("forecast_error"):
+                code = data.get("error") or data["forecast_error"]
+                errors.append(SourceError(source=kind, code=code, message="Public source is partially or fully unavailable."))
+                signals.issues.append(code)
+            if kind == "indices":
+                for row in data.get("indices", []):
+                    automatic_series.append((SatelliteSeries.model_validate(row), "auto-indices:"+digest(doc)))
+                signals.images += data.get("images", [])
     for index in ("NDVI", "NDMI"):
         doc = imported.get(f"satellite:{index}")
         if doc:
@@ -57,7 +70,7 @@ def prepare_signals(request, geometry, imported, settings, errors):
         if value:
             for series in value.indices:
                 entries[series.index] = (series, "indices-request:" + digest(series.model_dump(mode="json")))
-    all_entries = list(entries.values())
+    all_entries = automatic_series + list(entries.values())
     cutoff = as_of_cutoff(request.as_of_date)
     for doc in imported.get("images", []):
         image = FieldImageInput.model_validate(doc["data"])
@@ -86,13 +99,18 @@ def prepare_signals(request, geometry, imported, settings, errors):
             data, source = FieldWeatherInput.model_validate(doc), "weather-file:" + digest(doc)
         except (OSError, ValueError, KeyError) as exc:
             errors.append(SourceError(source="weather", code="IMPORT_ERROR", message=str(exc)))
+    elif imported.get("auto:weather"):
+        doc = imported["auto:weather"]
+        if doc["data"].get("geom_hash") == geometry.geom_hash and doc["data"].get("weather"):
+            data = FieldWeatherInput.model_validate(doc["data"]["weather"])
+            source = "auto-weather:"+digest(doc)
     if data is not None:
         try:
             build_local_weather(data, geometry, request.as_of_date, policy, signals, source)
         except ValueError as exc:
             signals.issues.append(str(exc))
             errors.append(SourceError(source="weather", code="LOCAL_WEATHER_INVALID", message=str(exc)))
-    for kind in ("personalization", "weather", "satellite:NDVI", "satellite:NDMI"):
+    for kind in ("personalization", "weather", "satellite:NDVI", "satellite:NDMI", "auto:weather", "auto:indices"):
         if imported.get(kind):
             doc = imported[kind]
             signals.source_availability["ingestion:" + digest(doc)] = datetime.fromisoformat(

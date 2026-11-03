@@ -66,15 +66,23 @@ class Preparer:
             imported = self._sources(request)
         return digest({"request": request.model_dump(mode="json", by_alias=True, exclude_unset=True),
                        "rules": self.rules.version, "sources": sources, "imported": imported,
-                       "demo": self.settings.demo, "prepare_version": "field-signals-1.0.0"})
+                       "demo": self.settings.demo, "prepare_version": "field-signals-2.1.0",
+                       "automatic": self.settings.automatic_sources_enabled,
+                       "refresh_bucket": (int(datetime.now(timezone.utc).timestamp()) // min(
+                           self.settings.automatic_weather_ttl_seconds, self.settings.automatic_indices_ttl_seconds)
+                           if self.settings.automatic_sources_enabled and not self.settings.demo
+                           and self.settings.ranking_profile == "personalized"
+                           and request.as_of_date == datetime.now(timezone.utc).date() else None)})
 
     def _sources(self, request: RecommendationRequest):
         if self.storage is None:
             return {}
         cutoff = as_of_cutoff(request.as_of_date)
         sources = {kind: self.storage.get_source(kind, request.field.field_id, cutoff)
-                   for kind in ("history", "costs", "satellite:NDVI", "satellite:NDMI",
+                   for kind in ("costs", "satellite:NDVI", "satellite:NDMI",
                                 "weather", "personalization")}
+        for kind in ("auto:weather", "auto:indices"):
+            sources[kind] = self.storage.get_source(kind, request.field.field_id, cutoff)
         sources["images"] = self.storage.get_sources("image:", request.field.field_id, cutoff)
         sources["prices"] = self.storage.get_source("prices", "*", cutoff)
         return sources
@@ -126,10 +134,7 @@ class Preparer:
             if not any(gaez.values()):
                 errors.append(SourceError(source="gaez", code="GAEZ_NO_COVERAGE",
                     message="No verified local layers available at as_of_date"))
-        history_rows = request.crop_history
-        if not history_rows and imported.get("history"):
-            history_rows = imported["history"]["data"]
-        history = normalize_history(history_rows, request.history_gaps, request.as_of_date)
+        history = normalize_history(request.crop_history, request.history_gaps, request.as_of_date)
         prices = [MarketPrice.model_validate(row) for row in imported["prices"]["data"]] if imported.get("prices") else []
         costs = {crop: CropCost.model_validate(cost) for crop, cost in imported["costs"]["data"].items()} if imported.get("costs") else {}
         rates = []
@@ -161,7 +166,8 @@ class Preparer:
                 weather = build_weather_features(records, request.as_of_date, self.rules.parameters)
             except (OSError, ValueError, KeyError) as exc:
                 errors.append(SourceError(source="weather", code="IMPORT_ERROR", message=str(exc)))
-        elif self.settings.weather_enabled:
+        elif self.settings.weather_enabled and not (
+                self.settings.automatic_sources_enabled and self.settings.ranking_profile == "personalized"):
             errors.append(SourceError(source="weather", code="WEATHER_SOURCE_REQUIRED",
                 message="Configure SIVAY_WEATHER_PATH with timestamped provider records"))
         if self.settings.satellite_path:
@@ -175,9 +181,12 @@ class Preparer:
                 satellite = build_satellite_features(series, request.as_of_date)
             except (OSError, ValueError, KeyError) as exc:
                 errors.append(SourceError(source="satellite", code="IMPORT_ERROR", message=str(exc)))
-        now = datetime.now(timezone.utc)
+        if (region == "UA" or (region and region.startswith("UA-"))) and any(gaez.values()):
+            from app.automatic import refresh_automatic
+            refresh_automatic(request, geom, imported, self.settings, self.storage, errors)
         from app.personalize import prepare_signals
         signals = prepare_signals(request, geom, imported, self.settings, errors)
+        now = datetime.now(timezone.utc)
         snap = FieldFeatureSnapshot(snapshot_id="pending", field_id=request.field.field_id,
             geom_hash=geom.geom_hash, as_of_date=request.as_of_date, prepared_at=now, region=region,
             gaez=gaez, history=history, weather=weather, satellite=satellite,

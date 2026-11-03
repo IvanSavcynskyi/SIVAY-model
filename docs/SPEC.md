@@ -56,6 +56,9 @@
 ```
 
 **Правила для історії культур:**
+- Єдине джерело історії для нової рекомендації — `crop_history` у тілі запиту
+  від бекенду. Історія не читається з БД за `field_id`; порожній або пропущений
+  список означає невідому історію. Це також стосується `/prepare`.
 - `role` приймає значення `main`, `second_crop` або `cover_crop`. Кілька записів за один рік дозволені.
 - `source` приймає значення `farm_records`, `user_memory`, `platform_detected` або `imported`.
 - `reliability` приймає значення `high`, `medium` або `low`.
@@ -142,69 +145,26 @@
 
 ## 6. Результат (контракт повернення)
 
-```json
-{
-  "recommendation_id": "rec_01J9...",
-  "status": "ok",                       // ok | needs_input | abstain | error
-  "mode": "FULL",                       // FULL | AGRO_ONLY | LIMITED | NEEDS_INPUT | ABSTAIN
-  "as_of_date": "2026-09-01",
-  "computed_at": "2026-09-01T08:14:03Z",
-  "results": [
-    {
-      "rank": 1,
-      "crop_variant": "wheat_winter",
-      "name_uk": "Пшениця озима",
-      "tier": 1,
-      "status": "recommended",          // recommended | conditional
-      "agro_score": {"lo": 0.54, "mid": 0.63, "hi": 0.68},
-      "gaez": {
-        "layer": "GAEZ-V5.RES05-SUX.HP0120.AGERA5.HIST.WHE.HRLM",
-        "crop_code": "WHE", "match": "parent_crop",
-        "scenario": {"period": "HP0120", "clim": "AGERA5", "wsim": "HRLM"},
-        "suitability_index": {"lo": 71, "mid": 78, "hi": 80},
-        "class_shares": {"2": 0.83, "3": 0.17},
-        "coverage_valid": 1.0, "resolution_deg": 0.0833, "field_to_cell_ratio": 0.021
-      },
-      "rotation": {"multiplier": {"lo": 0.9, "mid": 0.9, "hi": 0.9},
-                   "rules_fired": [{"id": "ROT-PRED-SUNFLOWER-FOR-WINTER-CEREALS", "version": 1, "effect": "discouraged_mild"}]},
-      "weather": {"multiplier": {"lo": 0.85, "mid": 0.9, "hi": 0.95}, "signal": "dry",
-                  "risks": [{"code": "ESTABLISHMENT", "level": "high"}, {"code": "WINTERKILL", "level": "moderate"}]},
-      "satellite": {"role": "history_check", "effect_on_rank": "none", "notes": ["record 2023 consistent with summer crop"]},
-      "economics": {
-        "applied_to_rank": true,
-        "price": {"base": 8500, "currency": "UAH", "unit": "t", "basis": "EXW", "vat": "excluded", "price_date": "2026-08-28", "age_days": 4},
-        "yield_t_ha": {"low": 4.5, "base": 5.5, "high": 6.3, "source": "user"},
-        "revenue_uah_ha": {"low": 32512, "base": 46750, "high": 61583},
-        "costs_uah_ha": 30000,
-        "margin_uah_ha": {"low": 2512, "base": 16750, "high": 31583}
-      },
-      "stability": {"p_top5": 0.69, "rank_range": [1, 6], "label": "sensitive", "main_driver": "weather_multiplier"},
-      "data_quality": {"level": "medium", "issues": ["history_2023_user_memory"]},
-      "assumptions": ["input_level=high (user)", "GAEZ не розрізняє озиму/яру пшеницю"],
-      "reasons": [{"text": "Придатність за GAEZ v5 ...", "trace_event_id": "ev_12"}],
-      "limitations": [{"text": "Оцінка стосується комірки ~6×9 км ...", "trace_event_id": "ev_13"}]
-    }
-  ],
-  "excluded": [{"crop_variant": "rapeseed_winter", "gate": "SOWING_WINDOW",
-                "text": "Збирання попередника (20.09–05.10) пізніше за кінець вікна (05.09)", "trace_event_id": "ev_4"}],
-  "below_threshold": [],
-  "not_evaluated": [{"crop_variant": "mustard", "reason": "NOT_IN_GAEZ_CATALOG"}],
-  "requests_for_input": [],             // наприклад {"field": "management.input_level", "why": "топ-5 змінюється"}
-  "data_quality": {"overall": "medium", "by_source": {"gaez": "high", "history": "medium", "weather": "high", "satellite": "medium", "prices": "high", "costs": "medium"}},
-  "provenance": {
-    "algorithm_version": "rank-1.0.0", "rules_version": "rules-ua-2026.08+3e1c",
-    "snapshot_id": "snap_...", "gaez_layers": [{"code": "...", "sha256": "..."}],
-    "weather": [{"provider": "...", "kind": "reanalysis", "available_until": "2026-08-31"}],
-    "price_ids": ["p_88213"], "robustness_grid_hash": "..."
-  }
-}
-```
+Публічний API повертає компактний результат, описаний у
+[контракті API](api-contract.md). Фактичний приклад —
+[`examples/real-response.json`](../examples/real-response.json).
 
-**Інваріанти результату:**
-- Кількість рекомендацій від 0 до 5. Якщо обґрунтованих культур лише 3, повертаємо 3.
-- `agro_score` не є ймовірністю. Маржа не є прибутком.
-- Кожне речення в `reasons` і `limitations` має `trace_event_id`.
-- Повторний розрахунок з тими самими `snapshot_id` і `rules_version` дає ідентичний результат.
+- Один підсумковий `status`: `ok`, `limited`, `needs_input`, `abstain`, `error`.
+- `recommendation_id` для GET, `snapshot_id` для replay, `as_of_date`, `demo`.
+- `results`: від 0 до 5 культур із `rank`, `crop_id`, `name_uk`, числовим
+  `score`, `score_explanation` та `economics`.
+- Спільні `warnings`, включно з обмеженнями й потрібними уточненнями.
+- `economics`: ціна у грн/т із датою, урожай у тоннах, виручка, витрати й маржа
+  у грн на все поле. Невідомі значення завжди присутні як `null`.
+
+`score` — центральне значення `mid` внутрішнього інтервалу у шкалі 0–1,
+не ймовірність успіху. Межі інтервалу не повертаються. Клієнт
+використовує готовий `rank`. Маржа враховує лише надані витрати.
+POST, GET і replay повертають однаковий формат. Вхідний запит не змінено.
+
+Повний внутрішній `RecommendationResult` зберігається в БД. Його пояснення
+мають `trace_event_id`; версії, джерела, якість даних і журнал розрахунку
+використовуються для аудиту, але не повертаються публічним endpoint.
 
 **Допоміжні endpoints:**
 

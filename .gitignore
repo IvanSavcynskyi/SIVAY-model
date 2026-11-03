@@ -16,3 +16,5 @@ data/regions.source.json
 data/regions.geojson
 data/regions.source.json
 !data/gaez/.gitkeep
+backups/
+*.dump

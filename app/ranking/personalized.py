@@ -6,8 +6,9 @@ from app.canonical import digest
 from app.domain import (Explanation, InputRequest, PersonalizationAssessment,
                         PersonalizationResult, RecommendationResult, StabilityResult, TraceEvent)
 from app.ranking.baseline import recommend_baseline
+from app.ranking.weighted import calculate_weighted
 
-ALGORITHM_VERSION = "personalized-1.0.0"
+ALGORITHM_VERSION = "personalized-2.0.0"
 ALIASES = {"pea_dry": "pea", "maize_grain": "maize", "corn": "maize"}
 
 
@@ -71,7 +72,7 @@ def _rule(rule, crop, req, snap):
                for selector in rule.crops):
         return None
     facts = {"metric": rule.metric, "operator": rule.operator, "threshold": rule.threshold,
-             "horizon_days": rule.horizon_days}
+             "horizon_days": rule.horizon_days, "weight": rule.weight, "full_risk_at": rule.full_risk_at}
     plans = snap.field_signals.weather.get("sowing_dates", {})
     sowing = plans.get(crop.id, plans.get(parent(crop.id)))
     if sowing is None:
@@ -87,6 +88,15 @@ def _rule(rule, crop, req, snap):
     if not 0 <= (sowing - req.as_of_date).days <= horizon:
         return _assessment(rule.id, rule.source, "not_applicable", 0,
             "Умови на поточну дату не поширюються на цей строк посіву; потрібне оновлення ближче до посіву.", **facts)
+    if rule.requires_vegetation:
+        cover = snap.field_signals.metrics.get("NDVI.mean")
+        facts.update(vegetation_ndvi=cover, vegetation_threshold=rule.vegetation_threshold)
+        if cover is None:
+            return _assessment(rule.id, rule.source, "unknown", rule.priority,
+                "Потрібен свіжий NDVI для перевірки застосовності індексної поправки.", **facts)
+        if cover < rule.vegetation_threshold:
+            return _assessment(rule.id, rule.source, "not_applicable", 0,
+                "Індексна поправка для рослинності не застосовується за низького рослинного покриву.", **facts)
     value = snap.field_signals.metrics.get(rule.metric)
     facts.update(value=value, sources=snap.field_signals.metric_sources.get(rule.metric, []))
     if value is None:
@@ -115,8 +125,11 @@ def recommend_personalized(req, snap, rules):
         assessments += [assessment for rule in policy.rules
                         if (assessment := _rule(rule, variant, req, snap)) is not None]
         priority = max((a.priority for a in assessments), default=0)
+        weighted = calculate_weighted(candidate.agro_score, assessments, policy)
+        candidate.ranking_score = weighted.final_score
         candidate.personalization = PersonalizationResult(policy_version=policy.version,
             policy_status=policy.status, risk_priority=priority, assessments=assessments,
+            ranking_method="rotation_then_weighted_score", weighted=weighted,
             metrics=snap.field_signals.metrics, sources=snap.field_signals.metric_sources,
             evidence={"indices": snap.field_signals.indices, "images": snap.field_signals.images,
                       "weather": snap.field_signals.weather, "issues": snap.field_signals.issues})
@@ -131,22 +144,22 @@ def recommend_personalized(req, snap, rules):
         candidate.data_quality.issues += ["PERSONALIZATION_NOT_FIELD_VALIDATED", *snap.field_signals.issues]
         candidates.append(candidate)
     def order(candidate):
-        assessments = candidate.personalization.assessments
-        return (candidate.personalization.risk_priority,
+        assessments = [a for a in candidate.personalization.assessments if a.rule_id.startswith("rotation.")]
+        return (max((a.priority for a in assessments), default=0),
                 sum(a.outcome in {"risk", "unknown"} for a in assessments),
-                -candidate.agro_score.lo, -candidate.agro_score.mid, candidate.crop_variant)
+                -candidate.ranking_score.lo, -candidate.ranking_score.mid, candidate.crop_variant)
     candidates.sort(key=order)
     endpoint_ranks = []
     for endpoint in ("lo", "mid", "hi"):
-        ordered = sorted(candidates, key=lambda c: (*order(c)[:2], -getattr(c.agro_score, endpoint),
-                                                   -c.agro_score.mid, c.crop_variant))
+        ordered = sorted(candidates, key=lambda c: (*order(c)[:2], -getattr(c.ranking_score, endpoint),
+                                                   -c.ranking_score.mid, c.crop_variant))
         endpoint_ranks.append({c.crop_variant: rank for rank, c in enumerate(ordered, 1)})
     for rank, candidate in enumerate(candidates[:req.options.max_results], 1):
         candidate.rank, candidate.tier = rank, rank
         positions = [ranks[candidate.crop_variant] for ranks in endpoint_ranks]
         candidate.stability = StabilityResult(p_top5=sum(p <= 5 for p in positions) / 3,
             rank_range=(min(positions), max(positions)), rank_median=median(positions),
-            label="unavailable", main_driver="fixed_policy_GAEZ_endpoints_only", scenarios_evaluated=3)
+            label="unavailable", main_driver="fixed_policy_weighted_endpoints_only", scenarios_evaluated=3)
     result.results = candidates[:req.options.max_results]
     result.trace = trace
     result.mode = "LIMITED" if result.results else "ABSTAIN"

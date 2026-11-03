@@ -1,6 +1,16 @@
+x-runtime: &runtime
+  restart: unless-stopped
+  logging:
+    driver: json-file
+    options:
+      max-size: "10m"
+      max-file: "3"
+
 services:
   postgres:
+    <<: *runtime
     image: postgres:16
+    mem_limit: 256m
     environment:
       POSTGRES_USER: sivay
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}
@@ -13,25 +23,45 @@ services:
       timeout: 5s
       retries: 10
   api:
+    <<: *runtime
     build: .
+    image: sivay:local
+    mem_limit: 512m
+    command: ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--limit-concurrency", "4"]
     ports: ["127.0.0.1:8000:8000"]
+    env_file: .env
     environment: &sivay_env
       SIVAY_DATABASE_URL: postgresql+psycopg://sivay:${POSTGRES_PASSWORD}@postgres:5432/sivay
       SIVAY_DEMO: ${SIVAY_DEMO:-false}
       SIVAY_RULES_PATH: ${SIVAY_RULES_PATH:-rules}
+      GDAL_CACHEMAX: "64"
+      OPENBLAS_NUM_THREADS: "1"
+      OMP_NUM_THREADS: "1"
     volumes:
-      - ./data:/srv/sivay/data
+      - ./data:/srv/sivay/data:ro
+    healthcheck:
+      test: ["CMD", "python", "-m", "app.healthcheck"]
+      interval: 30s
+      timeout: 15s
+      start_period: 30s
+      retries: 3
     depends_on:
       postgres:
         condition: service_healthy
   worker:
+    <<: *runtime
     build: .
+    image: sivay:local
+    mem_limit: 768m
     command: ["python", "-m", "app.worker"]
+    env_file: .env
     environment: *sivay_env
     volumes:
-      - ./data:/srv/sivay/data
+      - ./data:/srv/sivay/data:ro
     depends_on:
       postgres:
+        condition: service_healthy
+      api:
         condition: service_healthy
 volumes:
   postgres_data:

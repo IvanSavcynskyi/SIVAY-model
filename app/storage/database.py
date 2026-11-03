@@ -120,6 +120,12 @@ class Storage:
             row = session.get(RecommendationRow, recommendation_id)
             return RecommendationResult.model_validate(row.result) if row else None
 
+    def get_recommendation_request(self, recommendation_id: str) -> RecommendationRequest | None:
+        """Original geometry supplies field totals without consulting current sources."""
+        with Session(self.engine) as session:
+            row = session.get(RecommendationRow, recommendation_id)
+            return RecommendationRequest.model_validate(row.request) if row else None
+
     def put_source(self, kind: str, field_id: str, payload: dict) -> None:
         timestamp = payload.get("available_at")
         available_at = datetime.fromisoformat(timestamp.replace("Z", "+00:00")) if isinstance(timestamp, str) else timestamp

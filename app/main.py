@@ -3,10 +3,11 @@ from contextlib import asynccontextmanager
 
 from datetime import date
 
-from fastapi import FastAPI, Query, Request
+from fastapi import Depends, FastAPI, Query, Request
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.api.routes import read_indices, router
+from app.api.security import require_api_key
 from app.config import Settings
 from app.service import RecommendationService
 
@@ -23,12 +24,14 @@ def create_app(settings: Settings | None = None,
             application.state.service.storage.close()
 
     application = FastAPI(title="SIVAY", version="0.1.0", lifespan=lifespan,
+                          dependencies=[Depends(require_api_key)],
                           description="Відтворювані рекомендації культур з журналом розрахунку.")
+    application.state.settings = configured
     application.include_router(router, prefix="/v1")
     if configured.cors_origins:
         application.add_middleware(CORSMiddleware, allow_origins=configured.cors_origins,
                                   allow_methods=["GET", "POST", "PUT", "OPTIONS"],
-                                  allow_headers=["Content-Type"])
+                                  allow_headers=["Content-Type", "Authorization"])
 
     @application.get("/api/fields/{field_id}/indices", tags=["platform"])
     def platform_indices(field_id: str, request: Request,

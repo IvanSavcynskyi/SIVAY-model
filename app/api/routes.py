@@ -7,8 +7,9 @@ from sqlalchemy import text
 from sqlalchemy.exc import SQLAlchemyError
 
 from app.adapters.simple_prices import SimplePriceImport, parse_simple_prices
+from app.api.responses import RecommendationResponse, recommendation_response
 from app.domain import (CropCost, CropHistoryRecord, JobResult, RecommendationRequest,
-                        RecommendationResult, SatelliteSeries, FieldImageInput,
+                        SatelliteSeries, FieldImageInput,
                         FieldPersonalizationInput, FieldWeatherInput)
 from app.geo import GeometryError
 from app.prepare import validate_field
@@ -23,7 +24,7 @@ def _service(request: Request):
 
 def _validate(payload):
     try:
-        validate_field(payload)
+        return validate_field(payload)
     except GeometryError as exc:
         raise HTTPException(status_code=422, detail={"code": "INVALID_FIELD", "message": str(exc)}) from exc
 
@@ -45,18 +46,19 @@ def _unavailable(exc):
                         "message": "Сервіс тимчасово недоступний; повторіть запит пізніше."})
 
 
-@router.post("/recommendations", response_model=RecommendationResult)
+@router.post("/recommendations", response_model=RecommendationResponse)
 def recommend(payload: RecommendationRequest, request: Request,
               snapshot_id: str | None = Query(default=None, min_length=1)):
     """Use prepared features when available; otherwise prepare synchronously.
 
     Pass snapshot_id to replay an immutable snapshot without collecting sources.
     """
-    _validate(payload)
+    geometry = _validate(payload)
     _validate_personalization(payload.personalization, request)
     service = _service(request)
     try:
-        return service.replay(payload, snapshot_id) if snapshot_id else service.recommend(payload)
+        result = service.replay(payload, snapshot_id) if snapshot_id else service.recommend(payload)
+        return recommendation_response(result, geometry.area_ha)
     except GeometryError as exc:
         raise HTTPException(status_code=422, detail={"code": "INVALID_FIELD", "message": str(exc)}) from exc
     except LookupError as exc:
@@ -69,15 +71,56 @@ def recommend(payload: RecommendationRequest, request: Request,
         raise _unavailable(exc) from exc
 
 
-@router.get("/recommendations/{recommendation_id}", response_model=RecommendationResult)
+@router.get("/recommendations/{recommendation_id}", response_model=RecommendationResponse)
 def saved_recommendation(recommendation_id: str, request: Request):
     try:
-        result = _service(request).storage.get_recommendation(recommendation_id)
+        storage = _service(request).storage
+        result = storage.get_recommendation(recommendation_id)
+        original_request = storage.get_recommendation_request(recommendation_id) if result else None
     except SQLAlchemyError as exc:
         raise _unavailable(exc) from exc
     if result is None:
         raise HTTPException(status_code=404, detail={"code": "RECOMMENDATION_NOT_FOUND"})
-    return result
+    area_ha = validate_field(original_request).area_ha if original_request else None
+    return recommendation_response(result, area_ha)
+
+
+@router.get("/recommendations/{recommendation_id}/analysis")
+def recommendation_analysis(recommendation_id: str, request: Request):
+    """Inspect the actual immutable field evidence behind a saved verdict."""
+    storage = _service(request).storage
+    try:
+        result = storage.get_recommendation(recommendation_id)
+        if result is None:
+            raise HTTPException(status_code=404, detail={"code": "RECOMMENDATION_NOT_FOUND"})
+        original = storage.get_recommendation_request(recommendation_id)
+        snapshot = storage.get_snapshot(result.provenance.snapshot_id)
+    except SQLAlchemyError as exc:
+        raise _unavailable(exc) from exc
+    if snapshot is None:
+        raise HTTPException(status_code=404, detail={"code": "SNAPSHOT_NOT_FOUND"})
+    return {
+        "recommendation_id": result.recommendation_id,
+        "snapshot_id": snapshot.snapshot_id,
+        "prepared_at": snapshot.prepared_at,
+        "algorithm": result.provenance.algorithm_version,
+        "demo": result.provenance.demo,
+        "field": original.field.model_dump(mode="json") if original else None,
+        "area_ha": validate_field(original).area_ha if original else None,
+        "region": snapshot.region,
+        "metrics": snapshot.field_signals.metrics,
+        "metric_dates": snapshot.field_signals.metric_dates,
+        "weather": snapshot.field_signals.weather,
+        "indices": snapshot.field_signals.indices,
+        "images": snapshot.field_signals.images,
+        "issues": snapshot.field_signals.issues,
+        "source_errors": [{"source": error.source, "code": error.code}
+                          for error in result.provenance.source_errors],
+        "crops": [{"crop_id": crop.crop_variant, "gaez": crop.gaez,
+                   "weighted": crop.personalization.weighted if crop.personalization else None,
+                   "assessments": crop.personalization.assessments if crop.personalization else []}
+                  for crop in result.results],
+    }
 
 
 @router.post("/fields/{field_id}/prepare", status_code=202, response_model=JobResult)

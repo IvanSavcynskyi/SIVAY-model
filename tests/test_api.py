@@ -36,13 +36,17 @@ def test_recommendation_persisted_reused_and_replayed(api):
     assert response.status_code == 200, response.text
     result = response.json()
     assert result["results"] and len(result["results"]) <= 5
-    assert result["provenance"]["demo"]
+    assert result["demo"]
     assert client.get(f"/v1/recommendations/{result['recommendation_id']}").json() == result
     assert client.post("/v1/recommendations", json=payload).json() == result
-    replay = client.post("/v1/recommendations", params={"snapshot_id": result["provenance"]["snapshot_id"]}, json=payload)
+    replay = client.post("/v1/recommendations", params={"snapshot_id": result["snapshot_id"]}, json=payload)
     assert replay.status_code == 200, replay.text
     assert replay.json() == result
-    assert service.storage.get_snapshot(result["provenance"]["snapshot_id"])
+    assert service.storage.get_snapshot(result["snapshot_id"])
+    stored = service.storage.get_recommendation(result["recommendation_id"])
+    assert stored.trace and stored.provenance.demo
+    assert "trace" not in result and "provenance" not in result and "mode" not in result
+    assert all(isinstance(crop["score_explanation"], str) for crop in result["results"])
 
 
 def test_prepare_durable_worker_then_recommend(api):
@@ -56,7 +60,159 @@ def test_prepare_durable_worker_then_recommend(api):
     job = client.get(response.headers["location"]).json()
     assert job["status"] in {"completed", "partial"}
     result = client.post("/v1/recommendations", json=request_payload()).json()
-    assert result["provenance"]["snapshot_id"] == job["snapshot_id"]
+    assert result["snapshot_id"] == job["snapshot_id"]
+
+
+@pytest.mark.parametrize("history", [None, [], [{"crop": "wheat_winter", "year": 2025}]])
+def test_history_only_comes_from_request_for_sync_worker_and_replay(api, monkeypatch, history):
+    client, service = api
+    service.storage.put_source("history", "f1", {
+        "available_at": "2026-08-01T00:00:00Z",
+        "data": [{"crop": "soybean", "season_year": 2025}],
+    })
+    get_source = service.storage.get_source
+
+    def without_history_lookup(kind, *args, **kwargs):
+        assert kind != "history", "Crop history must not be read from the database"
+        return get_source(kind, *args, **kwargs)
+
+    monkeypatch.setattr(service.storage, "get_source", without_history_lookup)
+    payload = request_payload()
+    if history is not None:
+        payload["crop_history"] = history
+    response = client.post("/v1/recommendations", json=payload)
+    assert response.status_code == 200, response.text
+    result = response.json()
+    snapshot = service.storage.get_snapshot(result["snapshot_id"])
+    assert [(row.crop, row.season_year) for row in snapshot.history.records] == [
+        (row["crop"], row["year"]) for row in history or []]
+    if not history:
+        assert snapshot.history.quality == "missing"
+
+    # Stored history updates cannot affect the cache or the recommendation.
+    service.storage.put_source("history", "f1", {
+        "available_at": "2026-08-02T00:00:00Z",
+        "data": [{"crop": "maize_grain", "season_year": 2025}],
+    })
+    assert client.post("/v1/recommendations", json=payload).json() == result
+    assert client.post("/v1/recommendations", json=payload,
+                       params={"snapshot_id": result["snapshot_id"]}).json() == result
+
+    # A fresh request exercises PREPARE in the worker instead of using the sync cache.
+    queued_payload = {**payload, "options": {"max_results": 1}}
+    queued = client.post("/v1/fields/f1/prepare", json=queued_payload)
+    assert queued.status_code == 202
+    assert service.process_one_job()
+    job = client.get(queued.headers["location"]).json()
+    assert job["status"] in {"completed", "partial"}
+    prepared = service.storage.get_snapshot(job["snapshot_id"])
+    assert prepared.history == snapshot.history
+
+
+def test_history_changes_in_request_invalidate_snapshot_and_replay(api):
+    client, service = api
+    payload = {**request_payload(), "crop_history": [{"crop": "soybean", "year": 2025}]}
+    first = client.post("/v1/recommendations", json=payload).json()
+    payload["crop_history"] = [{"crop": "wheat_winter", "year": 2025}]
+    second = client.post("/v1/recommendations", json=payload).json()
+    assert second["snapshot_id"] != first["snapshot_id"]
+    assert service.storage.get_snapshot(first["snapshot_id"]).history.records[0].crop == "soybean"
+    assert service.storage.get_snapshot(second["snapshot_id"]).history.records[0].crop == "wheat_winter"
+    mismatch = client.post("/v1/recommendations", json=payload,
+                           params={"snapshot_id": first["snapshot_id"]})
+    assert mismatch.status_code == 422
+    assert mismatch.json()["detail"]["code"] == "SNAPSHOT_REQUEST_MISMATCH"
+
+
+def test_public_contract_and_openapi_expose_only_useful_fields(api):
+    client, _ = api
+    result = client.post("/v1/recommendations", json=request_payload()).json()
+    expected = {"recommendation_id", "snapshot_id", "status", "as_of_date", "demo",
+                "results", "warnings"}
+    assert set(result) == expected
+    assert result["warnings"]
+    for crop in result["results"]:
+        assert set(crop) == {"rank", "crop_id", "name_uk", "score", "score_explanation", "economics"}
+        assert 0 <= crop["score"] <= 1
+        assert "Центральне значення" in crop["score_explanation"]
+        assert crop["economics"] == dict.fromkeys([
+            "price_uah_t", "price_date", "yield_t_field", "revenue_uah_field",
+            "costs_uah_field", "margin_uah_field"])
+    assert len(set(result["warnings"])) == len(result["warnings"])
+    schemas = client.get("/openapi.json").json()["components"]["schemas"]
+    assert set(schemas["RecommendationResponse"]["properties"]) == expected
+    assert set(schemas["CropEconomicsResponse"]["required"]) == {
+        "price_uah_t", "price_date", "yield_t_field", "revenue_uah_field",
+        "costs_uah_field", "margin_uah_field"}
+    assert "TraceEvent" not in schemas and "Provenance" not in schemas
+
+
+@pytest.mark.parametrize("mode,internal_status,public_status", [
+    ("FULL", "ok", "ok"), ("AGRO_ONLY", "ok", "ok"),
+    ("LIMITED", "ok", "limited"), ("NEEDS_INPUT", "needs_input", "needs_input"),
+    ("ABSTAIN", "abstain", "abstain"), ("ABSTAIN", "error", "error"),
+])
+def test_public_status_and_empty_results(api, monkeypatch, mode, internal_status, public_status):
+    client, service = api
+    stored = service.recommend(RecommendationRequest.model_validate(request_payload()))
+    result = stored.model_copy(update={"mode": mode, "status": internal_status, "results": []})
+    monkeypatch.setattr(service, "recommend", lambda _: result)
+    response = client.post("/v1/recommendations", json=request_payload())
+    assert response.status_code == 200
+    assert response.json()["status"] == public_status
+    assert response.json()["results"] == []
+    assert response.json()["warnings"]
+
+
+def test_public_economics_keeps_central_values_and_zero_cost(api, monkeypatch):
+    from app.api.responses import recommendation_response
+    from app.domain import EconomicsResult, Interval, ScenarioValues
+
+    client, service = api
+    stored = service.recommend(RecommendationRequest.model_validate(request_payload()))
+    crop = stored.results[0]
+    crop.economics = EconomicsResult(
+        costs_uah_ha=0, yield_t_ha=ScenarioValues(low=1, base=2, high=3, source="private"),
+        revenue_uah_ha=ScenarioValues(low=1000, base=2000, high=3000),
+        margin_uah_ha=ScenarioValues(low=-100, base=0, high=100),
+    )
+    crop.ranking_score = Interval(lo=.1, mid=.7, hi=.9)
+    result = recommendation_response(stored, field_area_ha=10)
+    economics = result.results[0].economics.model_dump()
+    assert economics == {"costs_uah_field": 0, "yield_t_field": 20, "price_uah_t": None,
+                         "price_date": None, "revenue_uah_field": 20000, "margin_uah_field": 0}
+    assert result.results[0].score == .7
+    unknown_area = recommendation_response(stored).results[0].economics
+    assert unknown_area.yield_t_field is None and unknown_area.costs_uah_field is None
+    crop.economics.margin_uah_ha = ScenarioValues(low=-300, base=-200, high=-100)
+    assert recommendation_response(stored, 10).results[0].economics.margin_uah_field == -2000
+    # POST, GET and replay use the same original geometry for field totals.
+    stored.recommendation_id = "rec_field_totals"
+    service.storage.put_recommendation(RecommendationRequest.model_validate(request_payload()), stored)
+    monkeypatch.setattr(service, "recommend", lambda _: stored)
+    monkeypatch.setattr(service, "replay", lambda *_: stored)
+    public = client.post("/v1/recommendations", json=request_payload()).json()
+    assert public["results"][0]["economics"]["yield_t_field"] > 0
+    assert public["results"][0]["economics"]["margin_uah_field"] < 0
+    assert client.get("/v1/recommendations/rec_field_totals").json() == public
+    assert client.post("/v1/recommendations", json=request_payload(),
+                       params={"snapshot_id": stored.provenance.snapshot_id}).json() == public
+    assert crop.economics.yield_t_ha.source == "private"
+
+
+def test_abstention_explains_why_no_crops_are_returned(api, monkeypatch):
+    from app.domain import NotEvaluatedCrop
+
+    client, service = api
+    stored = service.recommend(RecommendationRequest.model_validate(request_payload()))
+    result = stored.model_copy(update={
+        "mode": "ABSTAIN", "status": "abstain", "results": [],
+        "not_evaluated": [NotEvaluatedCrop(crop_variant=crop, reason="TARGET_SOWING_YEAR_PASSED")
+                          for crop in ("wheat_winter", "wheat_spring")],
+    })
+    monkeypatch.setattr(service, "recommend", lambda _: result)
+    warnings = client.post("/v1/recommendations", json=request_payload()).json()["warnings"]
+    assert warnings.count("Рік посіву для заданого сезону вже минув; уточніть сезон.") == 1
 
 
 def test_invalid_input_and_unknown_resources(api):
@@ -100,7 +256,7 @@ def test_replay_rejects_changed_input(api):
     payload = request_payload()
     payload["constraints"] = {"excluded_crops": ["wheat"]}
     changed = client.post("/v1/recommendations", json=payload,
-                          params={"snapshot_id": result["provenance"]["snapshot_id"]})
+                          params={"snapshot_id": result["snapshot_id"]})
     assert changed.status_code == 422
 
 

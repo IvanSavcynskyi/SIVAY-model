@@ -3,7 +3,7 @@ from pathlib import Path
 from typing import Literal
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
-from pydantic import Field
+from pydantic import Field, SecretStr
 
 
 class Settings(BaseSettings):
@@ -22,6 +22,10 @@ class Settings(BaseSettings):
     demo: bool = False
     ranking_profile: Literal["gaez_baseline", "personalized", "validated"] = "personalized"
     personalization_policy_path: Path = Path("rules/personalization.json")
+    automatic_sources_enabled: bool = True
+    automatic_weather_ttl_seconds: int = Field(default=3600, ge=60, le=86400)
+    automatic_indices_ttl_seconds: int = Field(default=21600, ge=60, le=604800)
     cors_origins: list[str] = Field(default_factory=list)
+    api_key: SecretStr | None = Field(default=None, min_length=32)
     job_max_attempts: int = 3
     job_lease_seconds: int = 300

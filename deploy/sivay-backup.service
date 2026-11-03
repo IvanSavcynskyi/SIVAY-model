@@ -1,0 +1,10 @@
+[Unit]
+Description=Back up SIVAY PostgreSQL
+Requires=docker.service
+After=docker.service
+
+[Service]
+Type=oneshot
+WorkingDirectory=/home/ubuntu/sivay
+ExecStart=/bin/bash scripts/backup_postgres.sh
+UMask=0077

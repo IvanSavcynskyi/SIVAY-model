@@ -359,6 +359,9 @@ def test_nationwide_api_local_raster_source_versions_and_enriched_replay(tmp_pat
         history = client.put(f"/v1/fields/{field}/history", json=[{"crop": "soybean", "year": 2025}])
         assert history.status_code == 200, history.text
         assert history.json()["data"][0]["season_year"] == 2025
+        # The backend supplies history in the request; ingestion is not a fallback.
+        payload["crop_history"] = [{"crop": "soybean", "year": 2025,
+                                    "available_at": history.json()["available_at"]}]
         costs = client.put(f"/v1/fields/{field}/costs", json={"wheat_spring": {"value": 12345}})
         assert costs.status_code == 200, costs.text
         price = client.post("/v1/prices/import", json={
@@ -370,21 +373,24 @@ def test_nationwide_api_local_raster_source_versions_and_enriched_replay(tmp_pat
         first_response = client.post("/v1/recommendations", json=payload)
         assert first_response.status_code == 200, first_response.text
         first = first_response.json()
-        assert first["mode"] == "LIMITED" and not first["provenance"]["demo"]
-        assert first["provenance"]["algorithm_version"].startswith("gaez-baseline")
+        assert first["status"] == "limited" and not first["demo"]
+        stored = service.storage.get_recommendation(first["recommendation_id"])
+        assert stored.provenance.algorithm_version.startswith("gaez-baseline")
         assert len(first["results"]) == 1
         row = first["results"][0]
-        assert row["crop_variant"] == "wheat_spring" and row["status"] == "conditional"
-        assert row["economics"]["price"]["base"] == 8500
-        assert row["economics"]["costs_uah_ha"] == 12345
+        assert row["crop_id"] == "wheat_spring"
+        assert row["economics"]["price_uah_t"] == 8500
         assert all(row["economics"][key] is None
-                   for key in ("yield_t_ha", "revenue_uah_ha", "margin_uah_ha"))
-        assert not row["economics"]["applied_to_rank"]
-        trace = {event["id"] for event in first["trace"]}
-        assert row["reasons"] and row["limitations"]
-        assert all(item["trace_event_id"] in trace
-                   for item in row["reasons"] + row["limitations"])
-        snapshot = service.storage.get_snapshot(first["provenance"]["snapshot_id"])
+                   for key in ("yield_t_field", "revenue_uah_field", "margin_uah_field"))
+        assert row["economics"]["price_date"] == "2026-08-31"
+        assert not stored.results[0].economics.applied_to_rank
+        trace = {event.id for event in stored.trace}
+        assert row["score_explanation"] and first["warnings"]
+        assert all(item.trace_event_id in trace
+                   for item in stored.results[0].reasons + stored.results[0].limitations)
+        snapshot = service.storage.get_snapshot(first["snapshot_id"])
+        assert row["economics"]["costs_uah_field"] == pytest.approx(
+            12345 * snapshot.gaez["WHE"][0].field_area_ha)
         assert snapshot.region == "UA-32"
         assert snapshot.history.records[0].crop == "soybean"
         assert snapshot.costs_per_ha["wheat_spring"].value == 12345
@@ -408,7 +414,7 @@ def test_nationwide_api_local_raster_source_versions_and_enriched_replay(tmp_pat
         past = dict(payload, as_of_date="2026-08-31")
         historical = client.post("/v1/recommendations", json=past)
         assert historical.status_code == 200, historical.text
-        older = service.storage.get_snapshot(historical.json()["provenance"]["snapshot_id"])
+        older = service.storage.get_snapshot(historical.json()["snapshot_id"])
         assert not older.history.records and not older.costs_per_ha and not older.prices
         # One unavailable optional source is preserved as a partial job and an
         # explicit source error; it must not erase the usable local GAEZ layer.
@@ -422,5 +428,7 @@ def test_nationwide_api_local_raster_source_versions_and_enriched_replay(tmp_pat
         assert any(error.source == "weather" and error.code == "IMPORT_ERROR"
                    for error in partial.source_errors)
         limited = client.post("/v1/recommendations", json=payload).json()
-        assert limited["mode"] == "LIMITED" and limited["results"]
-        assert any(error["source"] == "weather" for error in limited["provenance"]["source_errors"])
+        assert limited["status"] == "limited" and limited["results"]
+        limited_stored = service.storage.get_recommendation(limited["recommendation_id"])
+        assert any(error.source == "weather" for error in limited_stored.provenance.source_errors)
+        assert "Частина джерел даних недоступна; результат враховує наявні дані." in limited["warnings"]

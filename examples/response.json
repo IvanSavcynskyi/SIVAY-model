@@ -1,0 +1,87 @@
+{
+  "recommendation_id": "rec_e4dfccc8b25bb791ee1eb5fdb3884b42",
+  "snapshot_id": "snap_5c58cd615e48634dc456a4b1155ec198",
+  "status": "ok",
+  "as_of_date": "2026-10-21",
+  "demo": false,
+  "results": [
+    {
+      "rank": 1,
+      "crop_id": "oat",
+      "name_uk": "Овес",
+      "score": 0.8075,
+      "score_explanation": "Центральне значення оцінки у шкалі 0–1; не ймовірність урожаю. Базова придатність за GAEZ: 100.0 зі 100. Після погодних та індексних поправок: 80.8 зі 100; множник до базового бала 0.807. Повторний посів тієї самої культури за наданою історією не виявлено.",
+      "economics": {
+        "price_uah_t": null,
+        "price_date": null,
+        "yield_t_field": null,
+        "revenue_uah_field": null,
+        "costs_uah_field": null,
+        "margin_uah_field": null
+      }
+    },
+    {
+      "rank": 2,
+      "crop_id": "pea_dry",
+      "name_uk": "Горох сухий",
+      "score": 0.8075,
+      "score_explanation": "Центральне значення оцінки у шкалі 0–1; не ймовірність урожаю. Базова придатність за GAEZ: 100.0 зі 100. Після погодних та індексних поправок: 80.8 зі 100; множник до базового бала 0.807. Повторний посів тієї самої культури за наданою історією не виявлено.",
+      "economics": {
+        "price_uah_t": null,
+        "price_date": null,
+        "yield_t_field": null,
+        "revenue_uah_field": null,
+        "costs_uah_field": null,
+        "margin_uah_field": null
+      }
+    },
+    {
+      "rank": 3,
+      "crop_id": "sugar_beet",
+      "name_uk": "Буряк цукровий",
+      "score": 0.6280735000000001,
+      "score_explanation": "Центральне значення оцінки у шкалі 0–1; не ймовірність урожаю. Базова придатність за GAEZ: 77.8 зі 100. Після погодних та індексних поправок: 62.8 зі 100; множник до базового бала 0.807. Повторний посів тієї самої культури за наданою історією не виявлено.",
+      "economics": {
+        "price_uah_t": null,
+        "price_date": null,
+        "yield_t_field": null,
+        "revenue_uah_field": null,
+        "costs_uah_field": null,
+        "margin_uah_field": null
+      }
+    },
+    {
+      "rank": 4,
+      "crop_id": "barley_spring",
+      "name_uk": "Ячмінь ярий",
+      "score": 0.4824005,
+      "score_explanation": "Центральне значення оцінки у шкалі 0–1; не ймовірність урожаю. Базова придатність за GAEZ: 59.7 зі 100. Після погодних та індексних поправок: 48.2 зі 100; множник до базового бала 0.807. Повторний посів тієї самої культури за наданою історією не виявлено.",
+      "economics": {
+        "price_uah_t": null,
+        "price_date": null,
+        "yield_t_field": null,
+        "revenue_uah_field": null,
+        "costs_uah_field": null,
+        "margin_uah_field": null
+      }
+    },
+    {
+      "rank": 5,
+      "crop_id": "maize_grain",
+      "name_uk": "Кукурудза на зерно",
+      "score": 0.471055125,
+      "score_explanation": "Центральне значення оцінки у шкалі 0–1; не ймовірність урожаю. Базова придатність за GAEZ: 77.8 зі 100. Після погодних та індексних поправок: 47.1 зі 100; множник до базового бала 0.606. Повторний посів тієї самої культури за наданою історією не виявлено.",
+      "economics": {
+        "price_uah_t": null,
+        "price_date": null,
+        "yield_t_field": null,
+        "revenue_uah_field": null,
+        "costs_uah_field": null,
+        "margin_uah_field": null
+      }
+    }
+  ],
+  "warnings": [
+    "Рекомендації містять умовні кандидати; врахуйте обмеження перед посівом."
+  ]
+}

@@ -266,20 +266,25 @@ def test_non_demo_ingress_image_ndmi_weather_policy_replay_and_ingestion_cutoff(
         response = client.post("/v1/recommendations", json=payload)
         assert response.status_code == 200, response.text
         first = response.json()
-        row = first["results"][0]
-        assert row["personalization"]["metrics"]["NDMI.mean"] == -.2  # supplied index wins over imagery
-        assert row["personalization"]["metrics"]["NDVI.mean"] == pytest.approx(.5)
-        assert row["personalization"]["metrics"]["weather.precip_7d"] == 7
-        assert row["personalization"]["risk_priority"] == 1
-        assert first["provenance"]["algorithm_version"] == "personalized-1.0.0"
-        snap = first["provenance"]["snapshot_id"]
+        stored = service.storage.get_recommendation(first["recommendation_id"])
+        row = stored.results[0]
+        assert row.personalization.metrics["NDMI.mean"] == -.2  # supplied index wins over imagery
+        assert row.personalization.metrics["NDVI.mean"] == pytest.approx(.5)
+        assert row.personalization.metrics["weather.precip_7d"] == 7
+        assert row.personalization.risk_priority == 1
+        assert stored.provenance.algorithm_version == "personalized-2.0.0"
+        assert first["results"][0]["score"] == row.ranking_score.mid
+        assert "personalization" not in first["results"][0]
+        snap = first["snapshot_id"]
         assert client.post("/v1/recommendations", params={"snapshot_id": snap}, json=payload).json() == first
         assert client.get("/v1/recommendations/" + first["recommendation_id"]).json() == first
         # New evidence creates a new snapshot but cannot mutate the previous one.
         assert client.post(f"/v1/fields/{field}/indices", json=series(mean=.5).model_dump(mode="json")).status_code == 201
         updated = client.post("/v1/recommendations", json=payload).json()
-        assert updated["provenance"]["snapshot_id"] != snap
-        assert updated["results"][0]["personalization"]["risk_priority"] == 0
+        assert updated["snapshot_id"] != snap
+        updated_stored = service.storage.get_recommendation(updated["recommendation_id"])
+        assert updated_stored.results[0].personalization.risk_priority == 0
         assert client.post("/v1/recommendations", params={"snapshot_id": snap}, json=payload).json() == first
         old = client.post("/v1/recommendations", json={**payload, "as_of_date": "2026-08-31"}).json()
-        assert old["results"][0]["personalization"]["evidence"]["images"] == []
+        old_stored = service.storage.get_recommendation(old["recommendation_id"])
+        assert old_stored.results[0].personalization.evidence["images"] == []

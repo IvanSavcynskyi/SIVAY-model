@@ -169,7 +169,11 @@ class RecommendationRequest(Model):
     field: FieldInput
     as_of_date: date
     target_season: TargetSeason
-    crop_history: list[CropHistoryRecord] = Field(default_factory=list)
+    crop_history: list[CropHistoryRecord] = Field(
+        default_factory=list,
+        description="Історія культур, передана бекендом. Порожній або відсутній список означає "
+                    "невідому історію; дані з БД за field_id не підставляються.",
+    )
     history_gaps: list[HistoryGap] = Field(default_factory=list)
     management: Management = Field(default_factory=Management)
     constraints: Constraints = Field(default_factory=Constraints)
@@ -450,6 +454,20 @@ class PersonalizationRule(Model):
     horizon_days: int = Field(default=14, ge=0, le=30)
     explanation_uk: str = Field(min_length=1)
     source: str = Field(min_length=1)
+    weight: float = Field(default=0.15, ge=0, le=1)
+    full_risk_at: float | None = None
+    group: Literal["moisture", "temperature", "vegetation"] | None = None
+    requires_vegetation: bool = False
+    vegetation_threshold: float = Field(default=0.3, ge=-1, le=1)
+
+    @model_validator(mode="after")
+    def valid_ramp(self):
+        if self.full_risk_at is not None:
+            if self.operator == "lt" and self.full_risk_at >= self.threshold:
+                raise ValueError("For lt rules full_risk_at must be below threshold")
+            if self.operator == "gt" and self.full_risk_at <= self.threshold:
+                raise ValueError("For gt rules full_risk_at must be above threshold")
+        return self
 
 
 class PersonalizationPolicy(Model):
@@ -471,6 +489,8 @@ class PersonalizationPolicy(Model):
             raise ValueError("Return intervals must be 1..30 years")
         if len({rule.id for rule in self.rules}) != len(self.rules):
             raise ValueError("Duplicate personalization rule id")
+        if any(rule.id.startswith("rotation.") for rule in self.rules):
+            raise ValueError("rotation. is a reserved rule id prefix")
         return self
 
 
@@ -508,6 +528,33 @@ class PersonalizationAssessment(Model):
     facts: dict[str, Any] = Field(default_factory=dict)
 
 
+class WeightedContribution(Model):
+    rule_id: str
+    group: Literal["moisture", "temperature", "vegetation"]
+    weight: float = Field(ge=0, le=1)
+    outcome: Literal["risk", "pass", "unknown", "not_applicable"]
+    severity: Interval
+    penalty: Interval
+    source: str
+
+
+class WeightedGroup(Model):
+    group: Literal["moisture", "temperature", "vegetation"]
+    rule_ids: list[str]
+    penalty: Interval
+    multiplier: Interval
+
+
+class WeightedCalculation(Model):
+    method: Literal["group_max_multiplicative"] = "group_max_multiplicative"
+    base_score: Interval
+    multiplier: Interval
+    final_score: Interval
+    contributions: list[WeightedContribution] = Field(default_factory=list)
+    groups: list[WeightedGroup] = Field(default_factory=list)
+    complete: bool
+
+
 class PersonalizationResult(Model):
     policy_version: str
     policy_status: Literal["experimental", "farm_configured"]
@@ -517,7 +564,8 @@ class PersonalizationResult(Model):
     sources: dict[str, list[str]] = Field(default_factory=dict)
     evidence: dict[str, Any] = Field(default_factory=dict)
     # GAEZ remains a suitability index; risks change order, never fabricate yield.
-    ranking_method: Literal["risk_priority_then_gaez"] = "risk_priority_then_gaez"
+    ranking_method: Literal["risk_priority_then_gaez", "rotation_then_weighted_score"] = "risk_priority_then_gaez"
+    weighted: WeightedCalculation | None = None
 
 
 class MarketPrice(Model):
@@ -713,6 +761,7 @@ class RankedCrop(Model):
     limitations: list[Explanation] = Field(default_factory=list)
     near_tie_with: list[str] = Field(default_factory=list)
     personalization: PersonalizationResult | None = None
+    ranking_score: Interval | None = None
 
 
 class ExcludedCrop(Model):

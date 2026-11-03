@@ -56,7 +56,16 @@ def enrich_result(result: RecommendationResult) -> RecommendationResult:
 
         facts = score.params
         if score.code == "PERSONALIZATION":
-            reason(f"Персоналізований порядок за ризиками поля; пріоритет ризику {facts['risk_priority']} (0 — нижчий, 3 — вищий).")
+            weighted = facts.get("weighted")
+            if weighted:
+                reason(f"Зважений бал: {_interval(weighted['final_score'])}; базовий GAEZ {_interval(weighted['base_score'])}, сумарний множник {_interval(weighted['multiplier'])}.")
+                groups = {"moisture": "зволоження", "temperature": "температура", "vegetation": "стан рослинності"}
+                for group in weighted["groups"]:
+                    reason(f"Поправка «{groups[group['group']]}»: множник {_interval(group['multiplier'])}; правила {', '.join(group['rule_ids'])}.")
+                if not weighted["complete"]:
+                    limitation("Частина потрібних показників невідома: нижня та центральна оцінки враховують максимальну задану поправку, верхня зберігає нейтральний потенціал.")
+            else:
+                reason(f"Персоналізований порядок за ризиками поля; пріоритет ризику {facts['risk_priority']} (0 — нижчий, 3 — вищий).")
             for assessment in facts["assessments"]:
                 text = assessment["explanation_uk"]
                 if assessment["outcome"] in {"unknown", "not_applicable"}:
@@ -84,7 +93,7 @@ def enrich_result(result: RecommendationResult) -> RecommendationResult:
         gaez = crop.gaez
         grid_event = event("GAEZ_RESOLUTION", crop.crop_variant, gaez.model_dump(), [gaez.layer])
         if score.code == "PERSONALIZATION":
-            reason(f"Базова придатність GAEZ: {_interval(gaez.suitability_index.model_dump())}; персональні ризики змінюють порядок, а не цей індекс.", grid_event)
+            reason(f"Базова придатність GAEZ: {_interval(gaez.suitability_index.model_dump())}; зважений бал наведено окремо в ranking_score.", grid_event)
         if score.code == "BASELINE_GAEZ":
             reason(f"Базова придатність за GAEZ: {_interval(gaez.suitability_index.model_dump())}.", grid_event)
             limitation("Базове порівняння за GAEZ потребує окремої перевірки сівозміни та строків посіву перед прийняттям рішення.")

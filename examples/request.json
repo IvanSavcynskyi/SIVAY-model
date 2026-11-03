@@ -9,6 +9,10 @@
   },
   "as_of_date": "2026-10-21",
   "target_season": {"harvest_year": 2027, "include": ["spring"]},
+  "crop_history": [
+    {"crop": "soybean", "year": 2025},
+    {"crop": "wheat_winter", "year": 2026}
+  ],
   "management": {"input_level": "high", "irrigation": "none"},
   "options": {"max_results": 5, "language": "uk"}
 }
